@@ -33,14 +33,14 @@ Alternatíva a kezdeti feltöltésre?
  */
 public class Main {
     public static void main(String[] args) {
-        int xSide = 10;                                       //x dimension of the table (megnövelt érték!)
-        int ySide = 10;                                       //y dimension of the table
+        int xSide = 10;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 10;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
         char[][] table = createEmptyTable(xSide, ySide);
         drawTable(table);
         System.out.println();
         int[] firstChoices = firstClick();
-        //nehezites!!!!!!!!!!!!!!!!!
-        drawTable(hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]));               //a koordináták Y,X sorrendben vannak / amíg készül a kód, megjelenik a hiddenTable
+        //nehezitest belerakni!!!!!!!!!!!!!!!!!
+        drawTable(hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]));               //a koordináták Y,X sorrendben vannak / amíg készül a kód, kiíratjuk a hiddenTable
         System.out.println();
     }
 
@@ -51,14 +51,14 @@ public class Main {
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
-            if ((((Math.abs(randX - chosenCoordinateX)) <= 1) && ((Math.abs(randY - chosenCoordinateY)) <= 1))) {       //if it's already a mine on that coordinate, skip it
-                //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+            if (((((Math.abs(randX - chosenCoordinateX)) > 1) || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenTable[randX][randY] != 9)) { //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
+            //átírtam kicsita kódot, megfordítottam a reláció jelet (így már egy feltételbe lehet rakni a nem egyenlő 9-cel),
+            // illetve "vagy"-t raktam közéjük, mert "és"-sel mind2 irányban 3 oszlop szélesen nem rakna aknát
+            // de ez nekünk nem szükséges. Illetve odaraktam "és"-sel a nem egyenlő 9-et is, és így akkor nem kell "else if"
 
-            } else if (hiddenTable[randX][randY] != 9) {
-                hiddenTable[randX][randY] = 9;
+                hiddenTable[randX][randY] = 9;                                                    //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
                 mineCreated++;
             }
-
         }
         //Eddig legenerálódnak a csillagok
 
