@@ -2,7 +2,30 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
+/*
+Szabalyok
+- Tetszoleges teglalap alapu palya - done
+- Minden mezo vagy akna vagy nem akna
+- Mezoket meg lehet jelolni vagy ra lehet lepni
+- Jelolest azt jelenti, hogy aknat velunk azon a mezon
+Ralepes:
+- ha akna volt a mezon, akkor vesztettunk
+- ha van szomszedos akna, akkor a szomszedos aknak szama kerul a mezore
+-ha nincs szomszedos akna, akkor az egybefuggo aknamentes resz kerul felfedesre
+utolso mezo eseten, ha az nem akna, akkor nyert
+- Jatek vegen a palyat fel kell fedni
+Pontszamitas:
+- nehezsegi pont a palya merete es aknak szama alapjan
+- nehezseg alapjan minden lepesert pontlevonas
+- eltelt ido
 
+Nehezitesek:
+- Egyedi palyameret
+- Szabalyozhato akna szam
+- Elore meghatarozott nehezsegek (konnyu, kozepes, nehez) ami megadja a palya meretet es akna szamot
+- Smiley a kozepen
+- Minel szebb megjelenes
+ */
 
 /* Arrays.fill() method??
 Alternatíva a kezdeti feltöltésre?
@@ -10,50 +33,52 @@ Alternatíva a kezdeti feltöltésre?
  */
 public class Main {
     public static void main(String[] args) {
-        int xSide = 10;                      //x dimension of the table (megnövelt érték!)
-        int ySide = 10;                      //y dimension of the table
+        int xSide = 10;                                       //x dimension of the table (megnövelt érték!)
+        int ySide = 10;                                       //y dimension of the table
         char[][] table = createEmptyTable(xSide, ySide);
         drawTable(table);
         System.out.println();
-        drawTable(hiddenTable(xSide, ySide));        //amíg készül a kód, megjelenik a hiddenTable
+        int[] firstChoices = firstClick();
+        //nehezites!!!!!!!!!!!!!!!!!
+        drawTable(hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]));               //a koordináták Y,X sorrendben vannak / amíg készül a kód, megjelenik a hiddenTable
         System.out.println();
-//        leftClick();
-
-
     }
 
-    public static int[][] hiddenTable(int xSide, int ySide) {
+    public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
         int mineNumber = 10;                                       //predefined
         int mineCreated = 0;
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
-            if (hiddenTable[randX][randY] == 9) {
-                continue;
-            } else {
-                hiddenTable[randX][randY] = 9;         //-1 = *
-                mineCreated++;                         //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+            if ((((Math.abs(randX - chosenCoordinateX)) <= 1) && ((Math.abs(randY - chosenCoordinateY)) <= 1))) {       //if it's already a mine on that coordinate, skip it
+                //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+
+            } else if (hiddenTable[randX][randY] != 9) {
+                hiddenTable[randX][randY] = 9;
+                mineCreated++;
             }
+
         }
         //Eddig legenerálódnak a csillagok
 
         // számértékek megjelenítése
-        for (int i = 1; i < hiddenTable.length - 1; i++) {      //1-es csökkentett határok
+        for (int i = 1; i < hiddenTable.length - 1; i++) {                                  //1-gyel csökkentett határok
             for (int j = 1; j < hiddenTable[i].length - 1; j++) {
-
-                if (hiddenTable[i][j] == 9) {                   //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+                if (hiddenTable[i][j] == 9) {                                              //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
                     for (int k = i - 1; k <= i + 1; k++) {
                         for (int l = j - 1; l <= j + 1; l++) {
-                            if (hiddenTable[k][l] == 9) {
-                                continue;
-                            } else {
+                            if (hiddenTable[k][l] != 9) {
                                 hiddenTable[k][l]++;
                             }
                         }
-
                     }
                 }
+            }
+        }
+        hiddenTable[chosenCoordinateX][chosenCoordinateY] = 8;
+        return hiddenTable;
+    }
 
 
 //                if (hiddenTable[i][j] == -1) {
@@ -65,24 +90,20 @@ public class Main {
 //                    hiddenTable[i - 1][j] = (hiddenTable[i - 1][j] == -1 ? -1 : hiddenTable[i - 1][j]++);                //jobbra felette
 //                    hiddenTable[i - 1][j + 1] = (hiddenTable[i - 1][j + 1] == -1 ? -1 : hiddenTable[i - 1][j + 1]++);    //jobbra felette
 //                }
-            }
-        }
 
-        return hiddenTable;
-    }
 
-    public static void drawTable(char[][] table) {                   //Számok a sorok és az oszlopok mellé!
-        for (int i = 0; i < table.length; i++) {
+    public static void drawTable(char[][] table) {                   //Számok a sorok és az oszlopok mellé!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 1; i < table.length - 1; i++) {                  //a keret (első és utolsó sor, ill. oszlop) nem kerül megjelenítésre
             System.out.println();
-            for (int j = 0; j < table[i].length; j++) {
+            for (int j = 1; j < table[i].length - 1; j++) {
                 System.out.print(table[i][j]);
                 System.out.print("  ");
             }
         }
     }
 
-    public static void drawTable(int[][] table) {                   //Számok a sorok és az oszlopok mellé!
-        for (int i = 1; i < table.length - 1; i++) {                    // a kerület nem kerül megjelenítésre
+    public static void drawTable(int[][] table) {                   //Számok a sorok és az oszlopok mellé!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        for (int i = 1; i < table.length - 1; i++) {                //a keret (első és utolsó sor, ill. oszlop) nem kerül megjelenítésre
             System.out.println();
             for (int j = 1; j < table[i].length - 1; j++) {
                 System.out.print(table[i][j]);
@@ -93,30 +114,52 @@ public class Main {
 
     public static char[][] createEmptyTable(int xSide, int ySide) {
         char[][] table = new char[xSide][ySide];
-        for (int i = 0; i < table.length; i++) {
-            for (int j = 0; j < table[i].length; j++) {
-                table[i][j] = '_';
-            }
+        for (char[] chars : table) {                                        //eredetileg két for ciklus volt itt
+            Arrays.fill(chars, '_');
         }
         return table;
     }
 
     public static int[][] createNullTable(int xSide, int ySide) {
         int[][] nullTable = new int[xSide][ySide];
-        for (int i = 0; i < nullTable.length; i++) {
-            for (int j = 0; j < nullTable[i].length; j++) {
-                nullTable[i][j] = 0;
-            }
+        for (int[] ints : nullTable) {                                      //eredetileg két for ciklus volt itt
+            Arrays.fill(ints, 0);
         }
         return nullTable;
     }
 
-    public static void leftClick() {
+    public static int[] firstClick() {
+        int[] firstClick = new int[2];
         Scanner sc = new Scanner(System.in);
         System.out.println("Válassz sort!");
-        int yChoice = sc.nextInt();
+        firstClick[0] = sc.nextInt();
         System.out.println("Válassz oszlopot!");
-        int xChoice = sc.nextInt();
+        firstClick[1] = sc.nextInt();
+        return firstClick;
     }
 
+
+    public static String[] click() {
+        String[] click = new String[3];
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Válassz sort!");
+        click[0] = sc.nextLine();
+        System.out.println("Válassz oszlopot!");
+        click[1] = sc.nextLine();
+        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!!
+        click[2] = sc.nextLine();
+//        if (flag == "F") {
+//            rightClick();
+//        } else {
+//            leftClick();
+//        }
+        return click;
+    }
+
+
+//    public static
+
+//    public static boolean isGameOver(int yChoice, int xChoice, String flag) {
+//
+//    }
 }
