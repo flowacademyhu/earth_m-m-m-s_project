@@ -40,10 +40,25 @@ public class Main {
         System.out.println();
         int[] firstChoices = firstClick();
         //nehezitest belerakni!!!!!!!!!!!!!!!!!
-        drawTable(hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]));               //a koordináták Y,X sorrendben vannak / amíg készül a kód, kiíratjuk a hiddenTable
         System.out.println();
+        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]);
+        drawTable(hiddenResult);               //a koordináták Y,X sorrendben vannak / amíg készül a kód, kiíratjuk a hiddenTable
+
+        table = emptyField(firstChoices[1], firstChoices[0], xSide, ySide, hiddenResult, table);
+        System.out.println();
+        drawTable(table);
     }
 
+
+    /**
+     * Rejtett tábla, amit a játékos nem lát
+     *
+     * @param xSide
+     * @param ySide
+     * @param chosenCoordinateX
+     * @param chosenCoordinateY
+     * @return
+     */
     public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
         int mineNumber = 10;                                       //predefined
@@ -52,9 +67,9 @@ public class Main {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
             if (((((Math.abs(randX - chosenCoordinateX)) > 1) || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenTable[randX][randY] != 9)) { //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
-            //átírtam kicsita kódot, megfordítottam a reláció jelet (így már egy feltételbe lehet rakni a nem egyenlő 9-cel),
-            // illetve "vagy"-t raktam közéjük, mert "és"-sel mind2 irányban 3 oszlop szélesen nem rakna aknát
-            // de ez nekünk nem szükséges. Illetve odaraktam "és"-sel a nem egyenlő 9-et is, és így akkor nem kell "else if"
+                //átírtam kicsita kódot, megfordítottam a reláció jelet (így már egy feltételbe lehet rakni a nem egyenlő 9-cel),
+                // illetve "vagy"-t raktam közéjük, mert "és"-sel mind2 irányban 3 oszlop szélesen nem rakna aknát
+                // de ez nekünk nem szükséges. Illetve odaraktam "és"-sel a nem egyenlő 9-et is, és így akkor nem kell "else if"
 
                 hiddenTable[randX][randY] = 9;                                                    //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
                 mineCreated++;
@@ -80,18 +95,11 @@ public class Main {
         return hiddenTable;
     }
 
-
-//                if (hiddenTable[i][j] == -1) {
-//                    hiddenTable[i + 1][j + 1] = (hiddenTable[i + 1][j + 1] == -1 ? -1 : hiddenTable[i + 1][j + 1]++);    //jobbra alatta
-//                    hiddenTable[i + 1][j] = (hiddenTable[i + 1][j] == -1 ? -1 : hiddenTable[i + 1][j]++);                // alatta
-//                    hiddenTable[i + 1][j - 1] = (hiddenTable[i + 1][j - 1] == -1 ? -1 : hiddenTable[i + 1][j - 1]++);    // balra alatta
-//                    hiddenTable[i][j - 1] = (hiddenTable[i][j - 1] == -1 ? -1 : hiddenTable[i][j - 1]++);                // balra
-//                    hiddenTable[i - 1][j - 1] = (hiddenTable[i - 1][j - 1] == -1 ? -1 : hiddenTable[i - 1][j - 1]++);    // balra felette
-//                    hiddenTable[i - 1][j] = (hiddenTable[i - 1][j] == -1 ? -1 : hiddenTable[i - 1][j]++);                //jobbra felette
-//                    hiddenTable[i - 1][j + 1] = (hiddenTable[i - 1][j + 1] == -1 ? -1 : hiddenTable[i - 1][j + 1]++);    //jobbra felette
-//                }
-
-
+    /**
+     * Megrajzolja a látható táblát
+     *
+     * @param table
+     */
     public static void drawTable(char[][] table) {                   //Számok a sorok és az oszlopok mellé!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for (int i = 1; i < table.length - 1; i++) {                  //a keret (első és utolsó sor, ill. oszlop) nem kerül megjelenítésre
             System.out.println();
@@ -102,6 +110,11 @@ public class Main {
         }
     }
 
+    /**
+     * Megrajzolja a rejtett táblát
+     *
+     * @param table
+     */
     public static void drawTable(int[][] table) {                   //Számok a sorok és az oszlopok mellé!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for (int i = 1; i < table.length - 1; i++) {                //a keret (első és utolsó sor, ill. oszlop) nem kerül megjelenítésre
             System.out.println();
@@ -112,6 +125,26 @@ public class Main {
         }
     }
 
+    public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
+        char[][] visibleField = table;
+        visibleField[chosenCoordinateX][chosenCoordinateY] = '0';
+        for (int i = chosenCoordinateX - 1; i <= chosenCoordinateX + 1; i++) {
+            for (int j = chosenCoordinateY - 1; j <= chosenCoordinateY + 1; j++) {
+                if (hiddenResult[i][j] == 0) {
+                    visibleField[i][j] = '0';
+                }
+            }
+        }
+        return visibleField;
+    }
+
+    /**
+     * Létrehozza a táblát
+     *
+     * @param xSide
+     * @param ySide
+     * @return
+     */
     public static char[][] createEmptyTable(int xSide, int ySide) {
         char[][] table = new char[xSide][ySide];
         for (char[] chars : table) {                                        //eredetileg két for ciklus volt itt
@@ -120,6 +153,13 @@ public class Main {
         return table;
     }
 
+    /**
+     * Nullákkal feltölti a táblázatot
+     *
+     * @param xSide
+     * @param ySide
+     * @return
+     */
     public static int[][] createNullTable(int xSide, int ySide) {
         int[][] nullTable = new int[xSide][ySide];
         for (int[] ints : nullTable) {                                      //eredetileg két for ciklus volt itt
@@ -128,6 +168,11 @@ public class Main {
         return nullTable;
     }
 
+    /**
+     * Első koordináta bekérés
+     *
+     * @return
+     */
     public static int[] firstClick() {
         int[] firstClick = new int[2];
         Scanner sc = new Scanner(System.in);
@@ -138,7 +183,17 @@ public class Main {
         return firstClick;
     }
 
+//    public static int rightClick(){
+//        String flag = "F";
+//
+//    }
+//    public static void leftClick(){
+//
+//    }
 
+    /**
+     * Lépés bekérés, ismétlődő
+     */
     public static String[] click() {
         String[] click = new String[3];
         Scanner sc = new Scanner(System.in);
