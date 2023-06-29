@@ -1,3 +1,6 @@
+## Ignore the local setting files
+**/.idea/*.xml
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
