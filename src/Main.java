@@ -41,10 +41,9 @@ public class Main {
         int[] firstChoices = firstClick();
         //nehezitest belerakni!!!!!!!!!!!!!!!!!
         System.out.println();
-        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]);
-        drawTable(hiddenResult);               //a koordináták Y,X sorrendben vannak / amíg készül a kód, kiíratjuk a hiddenTable
-
-        table = emptyField(firstChoices[1], firstChoices[0], xSide, ySide, hiddenResult, table);
+        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[0], firstChoices[1]);
+        drawTable(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenTablet-t is
+        table = emptyField(firstChoices[0], firstChoices[1], xSide, ySide, hiddenResult, table);
         System.out.println();
         drawTable(table);
     }
@@ -126,16 +125,15 @@ public class Main {
     }
 
     public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
-        char[][] visibleField = table;
-        visibleField[chosenCoordinateX][chosenCoordinateY] = '0';
+        table[chosenCoordinateX][chosenCoordinateY] = '0';
         for (int i = chosenCoordinateX - 1; i <= chosenCoordinateX + 1; i++) {
             for (int j = chosenCoordinateY - 1; j <= chosenCoordinateY + 1; j++) {
                 if (hiddenResult[i][j] == 0) {
-                    visibleField[i][j] = '0';
-                }
+                    table[i][j] = '0';
+                }                                       //ötlet: boolean hasZeroNeighbour egy while ciklusba, és egy külön függvénybe kiszervezett "nullásító" függvényt addig futtatni, amíg true
             }
         }
-        return visibleField;
+        return table;
     }
 
     /**
