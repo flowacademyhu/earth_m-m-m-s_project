@@ -36,13 +36,13 @@ public class Main {
     public static void main(String[] args) {
         int xSide = 10;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
         int ySide = 10;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
-        char[][] table = createEmptyTable(xSide, ySide);
+        char[][] table = createEmptyTable(xSide, ySide);        //the gameboard
         drawTable(table);
         System.out.println();
-        int[] firstChoices = firstClick();
+        int[] firstChoices = firstClick();                      // [Y és X]
         //nehezitest belerakni!!!!!!!!!!!!!!!!!
         System.out.println();
-        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[0], firstChoices[1]);
+        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[1], firstChoices[0]); //******** X és Y felcserélve!(0 és 1)
         drawTable(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenTablet-t is
         table = emptyField(firstChoices[0], firstChoices[1], xSide, ySide, hiddenResult, table);
         System.out.println();
@@ -66,21 +66,20 @@ public class Main {
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
-            if (((((Math.abs(randX - chosenCoordinateX)) > 1) || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenTable[randX][randY] != 9)) { //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
-                //átírtam kicsita kódot, megfordítottam a reláció jelet (így már egy feltételbe lehet rakni a nem egyenlő 9-cel),
-                // illetve "vagy"-t raktam közéjük, mert "és"-sel mind2 irányban 3 oszlop szélesen nem rakna aknát
-                // de ez nekünk nem szükséges. Illetve odaraktam "és"-sel a nem egyenlő 9-et is, és így akkor nem kell "else if"
-
-                hiddenTable[randX][randY] = 9;                                                    //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+            if (((((Math.abs(randX - chosenCoordinateX)) > 1)
+                    || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenTable[randY][randX] != 9)) {    //******** X és Y felcserélve!
+                //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
+                //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+                hiddenTable[randY][randX] = 9;              //******** X és Y felcserélve!
                 mineCreated++;
             }
         }
         //Eddig legenerálódnak a csillagok
 
         // számértékek megjelenítése
-        for (int i = 1; i < hiddenTable.length - 1; i++) {                                  //1-gyel csökkentett határok
+        for (int i = 1; i < hiddenTable.length - 1; i++) {                   //1-gyel csökkentett határok
             for (int j = 1; j < hiddenTable[i].length - 1; j++) {
-                if (hiddenTable[i][j] == 9) {                                              //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
+                if (hiddenTable[i][j] == 9) {                                //jobb átlátás/ellenőrzés miatt a "9"-es a "*"
                     for (int k = i - 1; k <= i + 1; k++) {
                         for (int l = j - 1; l <= j + 1; l++) {
                             if (hiddenTable[k][l] != 9) {
@@ -91,7 +90,7 @@ public class Main {
                 }
             }
         }
-        hiddenTable[chosenCoordinateX][chosenCoordinateY] = 8;
+        hiddenTable[chosenCoordinateY][chosenCoordinateX] = 8;  //******** X és Y felcserélve!
         return hiddenTable;
     }
 
@@ -125,20 +124,30 @@ public class Main {
         }
     }
 
+    /**
+     * @param chosenCoordinateX - a kiválasztott koordináta x értéke
+     * @param chosenCoordinateY - a kiválasztott koordináta y értéke
+     * @param sideX             - a játéktér szélessége (látható tartmomány)
+     * @param sideY             - a játéktér magassága (látható tartmomány)
+     * @param hiddenResult      - a rejtett tábla
+     * @param table             - gameboard amit a játékos lát
+     * @return table - a bemenetét adja vissza további mezőket felfedve
+     */
     public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
-        table[chosenCoordinateX][chosenCoordinateY] = '0';
-        int actualX = 0;      //a nullpont aktuális koordinátája - X
-        int actualY = 0;      //a nullpont aktuális koordinátája - Y
+        table[chosenCoordinateY][chosenCoordinateX] = '0';                      //******** X és Y felcserélve!
+//        int actualX = 0;      //a nullpont aktuális koordinátája - X          //Ez mire kellett? - REDUNDÁNS
+//        int actualY = 0;      //a nullpont aktuális koordinátája - Y          //Ez mire kellett? - REDUNDÁNS
 
-        ArrayList<Integer> listEarlierPointsX = new ArrayList<>();
+        ArrayList<Integer> listEarlierPointsX = new ArrayList<>();              //Lista létrehozása X-re
         ArrayList<Integer> listEarlierPointsY = new ArrayList<>();
-        listEarlierPointsX.add(chosenCoordinateX);
+        listEarlierPointsX.add(chosenCoordinateX);                              //Első megadott X koordináta hozzáadása
         listEarlierPointsY.add(chosenCoordinateY);
 
 
-        for (int i = chosenCoordinateX - 1; i <= chosenCoordinateX + 1; i++) {
-            for (int j = chosenCoordinateY - 1; j <= chosenCoordinateY + 1; j++) {
-
+        for (int i = chosenCoordinateY - 1; i <= chosenCoordinateY + 1; i++) {      //******** X és Y felcserélve!
+            for (int j = chosenCoordinateX - 1; j <= chosenCoordinateX + 1; j++) {
+                System.out.println();                                               //csak fejlesztésre jelenítjük meg!
+                System.out.println(i + " " + j);
 
                 //  ***eredeti tömbös elképzelés***
 //                int[] earlierPointsX = new int[1];      //x koordináták
@@ -146,12 +155,13 @@ public class Main {
 //                earlierPointsX[0] = chosenCoordinateX;    //a kezdő Xértéket beírja eleve
 //                earlierPointsY[0] = chosenCoordinateY;    //a kezdő Xértéket beírja eleve
 
-                if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0
+                if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0     //ha a megtalált mező 0...
                         && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
 
                     table[i][j] = '0';
-                    chosenCoordinateX = chosenCoordinateX + i;      //koordináta-változtatás
-                    chosenCoordinateY = chosenCoordinateY + j;      //koordináta-változtatás
+                    chosenCoordinateY =  i;      //******** X és Y felcserélve!
+                    chosenCoordinateX =  j;      //koordináta-változtatás
+                    /* Itt a chosenCoordinateY +=i helyett simán csak i értékét veszi fel, ezért már nem ugrik ki a limitből!!*/
 
 
                     //  ***eredeti tömbös elképzelés***
@@ -169,27 +179,26 @@ public class Main {
 //                    listferenc.remove(Integer.valueOf(2));
 
 
-                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] != '_') {
+                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_') {  //utolsót negáltam, hogy =='_'
                     table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
-                    table[chosenCoordinateX][chosenCoordinateY] = '0';      //valamirt elveszti az értékét enélkül KEZDŐPONT
-                    System.out.print("lista x: " + listEarlierPointsX);
-                    System.out.println("lista y: " + listEarlierPointsY);
-                    if (listEarlierPointsX.size()<1) {
+                    table[chosenCoordinateY][chosenCoordinateX] = '0';                       //******** X és Y felcserélve!
+                    //valamiért elveszti az értékét az előző sor nélkül KEZDŐPONT
+                } else {
+                    if (listEarlierPointsX.size() <= 1) {
                         continue;
                     }
 
                     listEarlierPointsX.remove(listEarlierPointsX.size() - 1);         //kivenni a legutolsó X listelemet
                     listEarlierPointsY.remove(listEarlierPointsY.size() - 1);         //kivenni a legutolsó X listelemet
 
-
                     chosenCoordinateX = listEarlierPointsX.get(listEarlierPointsX.size() - 1);  //koordináta-változtatás
-                    chosenCoordinateY = listEarlierPointsY.get(listEarlierPointsX.size() - 1);  //koordináta-változtatás
-                }
+                    chosenCoordinateY = listEarlierPointsY.get(listEarlierPointsY.size() - 1);  //koordináta-változtatás
+                }           //Itt volt egy elírás: a 2. kifejezésben is X volt
+
 
             }
-
-
         }
+
         return table;
     }
 
@@ -205,7 +214,7 @@ public class Main {
      * @return
      */
     public static char[][] createEmptyTable(int xSide, int ySide) {
-        char[][] table = new char[xSide][ySide];
+        char[][] table = new char[ySide][xSide];                            //******** X és Y felcserélve!
         for (char[] chars : table) {                                        //eredetileg két for ciklus volt itt
             Arrays.fill(chars, '_');
         }
@@ -220,7 +229,7 @@ public class Main {
      * @return
      */
     public static int[][] createNullTable(int xSide, int ySide) {
-        int[][] nullTable = new int[xSide][ySide];
+        int[][] nullTable = new int[ySide][xSide];                          //******** X és Y felcserélve!
         for (int[] ints : nullTable) {                                      //eredetileg két for ciklus volt itt
             Arrays.fill(ints, 0);
         }
@@ -235,9 +244,9 @@ public class Main {
     public static int[] firstClick() {
         int[] firstClick = new int[2];
         Scanner sc = new Scanner(System.in);
-        System.out.println("Válassz sort!");
+        System.out.println("Válassz sort!(add meg az Y értékét)");
         firstClick[0] = sc.nextInt();
-        System.out.println("Válassz oszlopot!");
+        System.out.println("Válassz oszlopot!(add meg az X értékét)");
         firstClick[1] = sc.nextInt();
         return firstClick;
     }
