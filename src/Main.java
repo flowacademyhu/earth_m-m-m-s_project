@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
@@ -126,15 +127,75 @@ public class Main {
 
     public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
         table[chosenCoordinateX][chosenCoordinateY] = '0';
+        int actualX = 0;      //a nullpont aktuális koordinátája - X
+        int actualY = 0;      //a nullpont aktuális koordinátája - Y
+
+        ArrayList<Integer> listEarlierPointsX = new ArrayList<>();
+        ArrayList<Integer> listEarlierPointsY = new ArrayList<>();
+        listEarlierPointsX.add(chosenCoordinateX);
+        listEarlierPointsY.add(chosenCoordinateY);
+
+
         for (int i = chosenCoordinateX - 1; i <= chosenCoordinateX + 1; i++) {
             for (int j = chosenCoordinateY - 1; j <= chosenCoordinateY + 1; j++) {
-                if (hiddenResult[i][j] == 0) {
+
+
+                //  ***eredeti tömbös elképzelés***
+//                int[] earlierPointsX = new int[1];      //x koordináták
+//                int[] earlierPointsY = new int[1];      //y koordináták
+//                earlierPointsX[0] = chosenCoordinateX;    //a kezdő Xértéket beírja eleve
+//                earlierPointsY[0] = chosenCoordinateY;    //a kezdő Xértéket beírja eleve
+
+                if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0
+                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+
                     table[i][j] = '0';
-                }                                       //ötlet: boolean hasZeroNeighbour egy while ciklusba, és egy külön függvénybe kiszervezett "nullásító" függvényt addig futtatni, amíg true
+                    chosenCoordinateX = chosenCoordinateX + i;      //koordináta-változtatás
+                    chosenCoordinateY = chosenCoordinateY + j;      //koordináta-változtatás
+
+
+                    //  ***eredeti tömbös elképzelés***
+//                    earlierPointsX = Arrays.copyOf(earlierPointsX, earlierPointsX.length+1);
+//                    chosenCoordinateX = chosenCoordinateX + i;      //koordináta-változtatás
+//                    earlierPointsX[earlierPointsX.length-1] = chosenCoordinateX;        //beírtuk a tömbbe
+//
+//                    earlierPointsY = Arrays.copyOf(earlierPointsY, earlierPointsY.length+1);
+//                    chosenCoordinateY = chosenCoordinateY + i;      //koordináta-változtatás
+//                    earlierPointsY[earlierPointsY.length-1] = chosenCoordinateY;        //beírtuk a tömbbe
+
+                    //elmentettük a korábbi kezdőpontot (cikluson kívül) és átírtuk a kezdőpontot és azt is kiírtuk
+
+
+//                    listferenc.remove(Integer.valueOf(2));
+
+
+                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] != '_') {
+                    table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
+                    table[chosenCoordinateX][chosenCoordinateY] = '0';      //valamirt elveszti az értékét enélkül KEZDŐPONT
+                    System.out.print("lista x: " + listEarlierPointsX);
+                    System.out.println("lista y: " + listEarlierPointsY);
+                    if (listEarlierPointsX.size()<1) {
+                        continue;
+                    }
+
+                    listEarlierPointsX.remove(listEarlierPointsX.size() - 1);         //kivenni a legutolsó X listelemet
+                    listEarlierPointsY.remove(listEarlierPointsY.size() - 1);         //kivenni a legutolsó X listelemet
+
+
+                    chosenCoordinateX = listEarlierPointsX.get(listEarlierPointsX.size() - 1);  //koordináta-változtatás
+                    chosenCoordinateY = listEarlierPointsY.get(listEarlierPointsX.size() - 1);  //koordináta-változtatás
+                }
+
             }
+
+
         }
         return table;
     }
+
+
+    //A 0 melletti "0" mezők fefedése
+
 
     /**
      * Létrehozza a táblát
