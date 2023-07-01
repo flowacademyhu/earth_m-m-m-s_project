@@ -62,7 +62,7 @@ public class Main {
      */
     public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
-        int mineNumber = 10;                                       //predefined
+        int mineNumber = 4;                                       //predefined
         int mineCreated = 0;
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
@@ -160,12 +160,12 @@ public class Main {
                         && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
 
                     table[i][j] = '0';
-                    chosenCoordinateX =  i;      //******** X és Y felcserélve!
-                    chosenCoordinateY =  j;      //koordináta-változtatás
+                    chosenCoordinateX = i;      //******** X és Y felcserélve!
+                    chosenCoordinateY = j;      //koordináta-változtatás
                     listEarlierPointsX.add(chosenCoordinateX);                              //új X koordináta hozzáadása//ezeket adtam hozzá///////////////////////////////////////////////////////////
                     listEarlierPointsY.add(chosenCoordinateY);                              //új Y koordináta hozzáadása
-//                    i = chosenCoordinateX - 1;                                              //az i, j-t itt kell meghatározni, különben nem jó!!!!!
-//                    j = chosenCoordinateY - 2;                                              // A j azért -2 mert a j++ alapból hozzáad
+                    i = chosenCoordinateX - 1;                                              //az i, j-t itt kell meghatározni, különben nem jó!!!!!
+                    j = chosenCoordinateY - 2;                                              // A j azért -2 mert a j++ alapból hozzáad
                     System.out.println("0-t talált");
                     System.out.println("chosenCoordinateX: " + chosenCoordinateX);
                     System.out.println("chosenCoordinateY: " + chosenCoordinateY);
@@ -191,7 +191,7 @@ public class Main {
 
 //                    listferenc.remove(Integer.valueOf(2));
 
-                //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, bár ez már nem biztos, h szükséges///////////////////////////////////////////////////////////////////////
+                    //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, bár ez már nem biztos, h szükséges///////////////////////////////////////////////////////////////////////
                 } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_' && i > 0 && j > 0     //ha a megtalált mező 0...
                         && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {  //utolsót negáltam, hogy =='_'
                     table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
@@ -200,8 +200,11 @@ public class Main {
                     System.out.println("chosenCoordinateX: " + chosenCoordinateX);
                     System.out.println("chosenCoordinateY: " + chosenCoordinateY);
                     //valamiért elveszti az értékét az előző sor nélkül KEZDŐPONT
-                } else if (table[i][j] == '_' && i > 0 && j > 0                     //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, ill. h csak azokat nézze, amik még nincsenek felfedve//
-                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1){
+                } else if (table[i][j] != '_') {
+                    continue;
+                }  else if (i == chosenCoordinateX + 1 && j == chosenCoordinateY + 1) {
+
+
                     if (listEarlierPointsX.size() <= 1) {
                         System.out.println("continue");
                         System.out.println("chosenCoordinateX: " + chosenCoordinateX);
@@ -222,19 +225,18 @@ public class Main {
 
                     chosenCoordinateX = listEarlierPointsX.get(listEarlierPointsX.size() - 1);  //koordináta-változtatás
                     chosenCoordinateY = listEarlierPointsY.get(listEarlierPointsY.size() - 1);  //koordináta-változtatás
-//                    i = chosenCoordinateX -1;
-//                    j = chosenCoordinateY -2;
+                    i = chosenCoordinateX - 1;
+                    j = chosenCoordinateY - 2;
 
                     System.out.println("chosenCoordinateX remove után: " + chosenCoordinateX);
                     System.out.println("chosenCoordinateY remove után: " + chosenCoordinateY);
                     System.out.println("listX remove után: " + listEarlierPointsX);
                     System.out.println("listY remove után: " + listEarlierPointsY);
-                }           //Itt volt egy elírás: a 2. kifejezésben is X volt
-
-
+                } else if (i > 0 && j > 0 && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+                    continue;
+                }
             }
         }
-
         return table;
     }
 
@@ -305,7 +307,7 @@ public class Main {
         click[0] = sc.nextLine();
         System.out.println("Válassz oszlopot!");
         click[1] = sc.nextLine();
-        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!!
+        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!! - try catch
         click[2] = sc.nextLine();
 //        if (flag == "F") {
 //            rightClick();
