@@ -35,8 +35,8 @@ Alternatíva a kezdeti feltöltésre?
  */
 public class Main {
     public static void main(String[] args) {
-        int xSide = 10;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 10;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
+        int xSide = 62;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 32;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
         char[][] table = createEmptyTable(xSide, ySide);        //the gameboard
         drawTable(table);
         System.out.println();
@@ -62,7 +62,7 @@ public class Main {
      */
     public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
-        int mineNumber = 4;                                       //predefined
+        int mineNumber = 300;                                       //predefined
         int mineCreated = 0;
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
@@ -156,53 +156,7 @@ public class Main {
 //                earlierPointsX[0] = chosenCoordinateX;    //a kezdő Xértéket beírja eleve
 //                earlierPointsY[0] = chosenCoordinateY;    //a kezdő Xértéket beírja eleve
 
-                if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0     //ha a megtalált mező 0...
-                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
-
-                    table[i][j] = '0';
-                    chosenCoordinateX = i;      //******** X és Y felcserélve!
-                    chosenCoordinateY = j;      //koordináta-változtatás
-                    listEarlierPointsX.add(chosenCoordinateX);                              //új X koordináta hozzáadása//ezeket adtam hozzá///////////////////////////////////////////////////////////
-                    listEarlierPointsY.add(chosenCoordinateY);                              //új Y koordináta hozzáadása
-                    i = chosenCoordinateX - 1;                                              //az i, j-t itt kell meghatározni, különben nem jó!!!!!
-                    j = chosenCoordinateY - 2;                                              // A j azért -2 mert a j++ alapból hozzáad
-                    System.out.println("0-t talált");
-                    System.out.println("chosenCoordinateX: " + chosenCoordinateX);
-                    System.out.println("chosenCoordinateY: " + chosenCoordinateY);
-                    System.out.println("listX: " + listEarlierPointsX);
-                    System.out.println("listY: " + listEarlierPointsY);
-
-
-
-                    /* Itt a chosenCoordinateY +=i helyett simán csak i értékét veszi fel, ezért már nem ugrik ki a limitből!!*/
-
-
-                    //  ***eredeti tömbös elképzelés***
-//                    earlierPointsX = Arrays.copyOf(earlierPointsX, earlierPointsX.length+1);
-//                    chosenCoordinateX = chosenCoordinateX + i;      //koordináta-változtatás
-//                    earlierPointsX[earlierPointsX.length-1] = chosenCoordinateX;        //beírtuk a tömbbe
-//
-//                    earlierPointsY = Arrays.copyOf(earlierPointsY, earlierPointsY.length+1);
-//                    chosenCoordinateY = chosenCoordinateY + i;      //koordináta-változtatás
-//                    earlierPointsY[earlierPointsY.length-1] = chosenCoordinateY;        //beírtuk a tömbbe
-
-                    //elmentettük a korábbi kezdőpontot (cikluson kívül) és átírtuk a kezdőpontot és azt is kiírtuk
-
-
-//                    listferenc.remove(Integer.valueOf(2));
-
-                    //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, bár ez már nem biztos, h szükséges///////////////////////////////////////////////////////////////////////
-                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_' && i > 0 && j > 0     //ha a megtalált mező 0...
-                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {  //utolsót negáltam, hogy =='_'
-                    table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
-                    table[chosenCoordinateX][chosenCoordinateY] = '0';                       //******** X és Y felcserélve!
-                    System.out.println("számot talált");
-                    System.out.println("chosenCoordinateX: " + chosenCoordinateX);
-                    System.out.println("chosenCoordinateY: " + chosenCoordinateY);
-                    //valamiért elveszti az értékét az előző sor nélkül KEZDŐPONT
-                } else if (table[i][j] != '_') {
-                    continue;
-                }  else if (i == chosenCoordinateX + 1 && j == chosenCoordinateY + 1) {
+                if (i == chosenCoordinateX + 1 && j == chosenCoordinateY + 1) {
 
 
                     if (listEarlierPointsX.size() <= 1) {
@@ -232,8 +186,65 @@ public class Main {
                     System.out.println("chosenCoordinateY remove után: " + chosenCoordinateY);
                     System.out.println("listX remove után: " + listEarlierPointsX);
                     System.out.println("listY remove után: " + listEarlierPointsY);
-                } else if (i > 0 && j > 0 && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+                    drawTable(table);
+
+                } else if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0     //ha a megtalált mező 0...
+                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+
+                    table[i][j] = '0';
+                    chosenCoordinateX = i;      //******** X és Y felcserélve!
+                    chosenCoordinateY = j;      //koordináta-változtatás
+                    listEarlierPointsX.add(chosenCoordinateX);                              //új X koordináta hozzáadása//ezeket adtam hozzá///////////////////////////////////////////////////////////
+                    listEarlierPointsY.add(chosenCoordinateY);                              //új Y koordináta hozzáadása
+                    i = chosenCoordinateX - 1;                                              //az i, j-t itt kell meghatározni, különben nem jó!!!!!
+                    j = chosenCoordinateY - 2;                                              // A j azért -2 mert a j++ alapból hozzáad
+                    System.out.println("0-t talált");
+                    System.out.println("chosenCoordinateX: " + chosenCoordinateX);
+                    System.out.println("chosenCoordinateY: " + chosenCoordinateY);
+                    System.out.println("listX: " + listEarlierPointsX);
+                    System.out.println("listY: " + listEarlierPointsY);
+                    drawTable(table);
+
+
+
+                    /* Itt a chosenCoordinateY +=i helyett simán csak i értékét veszi fel, ezért már nem ugrik ki a limitből!!*/
+
+
+                    //  ***eredeti tömbös elképzelés***
+//                    earlierPointsX = Arrays.copyOf(earlierPointsX, earlierPointsX.length+1);
+//                    chosenCoordinateX = chosenCoordinateX + i;      //koordináta-változtatás
+//                    earlierPointsX[earlierPointsX.length-1] = chosenCoordinateX;        //beírtuk a tömbbe
+//
+//                    earlierPointsY = Arrays.copyOf(earlierPointsY, earlierPointsY.length+1);
+//                    chosenCoordinateY = chosenCoordinateY + i;      //koordináta-változtatás
+//                    earlierPointsY[earlierPointsY.length-1] = chosenCoordinateY;        //beírtuk a tömbbe
+
+                    //elmentettük a korábbi kezdőpontot (cikluson kívül) és átírtuk a kezdőpontot és azt is kiírtuk
+
+
+//                    listferenc.remove(Integer.valueOf(2));
+
+                    //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, bár ez már nem biztos, h szükséges///////////////////////////////////////////////////////////////////////
+                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_' && i > 0 && j > 0     //ha a megtalált mező 0...
+                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {  //utolsót negáltam, hogy =='_'
+                    table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
+                    table[chosenCoordinateX][chosenCoordinateY] = '0';                       //******** X és Y felcserélve!
+                    System.out.println("számot talált");
+                    System.out.println("chosenCoordinateX: " + chosenCoordinateX);
+                    System.out.println("chosenCoordinateY: " + chosenCoordinateY);
+                    drawTable(table);
+                    //valamiért elveszti az értékét az előző sor nélkül KEZDŐPONT
+                } else if (table[i][j] != '_') {
+                    System.out.println("már van beírt karakter");
+                    System.out.println("chosenCoordinateX: " + chosenCoordinateX);
+                    System.out.println("chosenCoordinateY: " + chosenCoordinateY);
+                    drawTable(table);
                     continue;
+                } else if (i > 0 && j > 0 && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+                    System.out.println("határon túli");
+                    drawTable(table);
+                    continue;
+
                 }
             }
         }
