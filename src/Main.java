@@ -35,8 +35,8 @@ Alternatíva a kezdeti feltöltésre?
  */
 public class Main {
     public static void main(String[] args) {
-        int xSide = 62;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 32;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
+        int xSide = 15;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 19;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
         char[][] table = createEmptyTable(xSide, ySide);        //the gameboard
         drawTable(table);
         System.out.println();
@@ -62,7 +62,7 @@ public class Main {
      */
     public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
-        int mineNumber = 300;                                       //predefined
+        int mineNumber = 30;                                       //predefined
         int mineCreated = 0;
         while (mineCreated < mineNumber) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
@@ -147,6 +147,9 @@ public class Main {
 
         for (int i = chosenCoordinateX - 1; i <= chosenCoordinateX + 1; i++) {      //******** X és Y felcserélve!
             for (int j = chosenCoordinateY - 1; j <= chosenCoordinateY + 1; j++) {
+                boolean withinBorders = i > 0 && j > 0 && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1;
+
+
                 System.out.println();                                               //csak fejlesztésre jelenítjük meg!
                 System.out.println("i: " + i + ", j: " + j);
 
@@ -156,7 +159,7 @@ public class Main {
 //                earlierPointsX[0] = chosenCoordinateX;    //a kezdő Xértéket beírja eleve
 //                earlierPointsY[0] = chosenCoordinateY;    //a kezdő Xértéket beírja eleve
 
-                if (i == chosenCoordinateX + 1 && j == chosenCoordinateY + 1) {
+                if (i == chosenCoordinateX + 1 && j == chosenCoordinateY + 1) {         // megnézni mi van ott és kiiratni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
                     if (listEarlierPointsX.size() <= 1) {
@@ -188,8 +191,7 @@ public class Main {
                     System.out.println("listY remove után: " + listEarlierPointsY);
                     drawTable(table);
 
-                } else if (hiddenResult[i][j] == 0 && table[i][j] != '0' && i > 0 && j > 0     //ha a megtalált mező 0...
-                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+                } else if (hiddenResult[i][j] == 0 && table[i][j] != '0' && withinBorders) {
 
                     table[i][j] = '0';
                     chosenCoordinateX = i;      //******** X és Y felcserélve!
@@ -225,8 +227,7 @@ public class Main {
 //                    listferenc.remove(Integer.valueOf(2));
 
                     //ide hozzáadtam azt a feltételt, hogy a látható táblán belül vizsgálja, bár ez már nem biztos, h szükséges///////////////////////////////////////////////////////////////////////
-                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_' && i > 0 && j > 0     //ha a megtalált mező 0...
-                        && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {  //utolsót negáltam, hogy =='_'
+                } else if (hiddenResult[i][j] != 0 && hiddenResult[i][j] != 9 && table[i][j] == '_' && withinBorders) {  //utolsót negáltam, hogy =='_'
                     table[i][j] = Character.forDigit(hiddenResult[i][j], 10); //radix?
                     table[chosenCoordinateX][chosenCoordinateY] = '0';                       //******** X és Y felcserélve!
                     System.out.println("számot talált");
@@ -240,11 +241,10 @@ public class Main {
                     System.out.println("chosenCoordinateY: " + chosenCoordinateY);
                     drawTable(table);
                     continue;
-                } else if (i > 0 && j > 0 && i < hiddenResult.length - 1 && j < hiddenResult[i].length - 1) {
+                } else if (withinBorders) {
                     System.out.println("határon túli");
                     drawTable(table);
                     continue;
-
                 }
             }
         }
