@@ -48,6 +48,26 @@ public class Main {
         table = emptyField(firstChoices[0], firstChoices[1], xSide, ySide, hiddenResult, table);
         System.out.println();
         drawTable(table);
+        do {
+            click();
+            String[] choices = new String [0];
+            choices = Arrays.copyOf(choices, choices.length + 3);
+            int i = 1;
+            if (choices[i].equals("F")){
+                // rightCLick();
+
+            }
+            if (choices[0] == ){
+
+            }
+            i += 3;
+        }
+            while ()
+
+
+
+
+
     }
 
 
@@ -136,8 +156,6 @@ public class Main {
      */
     public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
         table[chosenCoordinateX][chosenCoordinateY] = '0';                      //******** X és Y felcserélve!
-//        int actualX = 0;      //a nullpont aktuális koordinátája - X          //Ez mire kellett? - REDUNDÁNS
-//        int actualY = 0;      //a nullpont aktuális koordinátája - Y          //Ez mire kellett? - REDUNDÁNS
 
         List<Integer> listEarlierPointsX = new ArrayList<>();              //Lista létrehozása X-re
         List<Integer> listEarlierPointsY = new ArrayList<>();
@@ -285,9 +303,9 @@ public class Main {
 //        String flag = "F";
 //
 //    }
-//    public static void leftClick(){
-//
-//    }
+    public static void leftClick(){
+
+    }
 
     /**
      * Lépés bekérés, ismétlődő
@@ -295,9 +313,9 @@ public class Main {
     public static String[] click() {
         String[] click = new String[3];
         Scanner sc = new Scanner(System.in);
-        System.out.println("Válassz sort!");
+        System.out.println("Válassz sort!(add meg az Y értékét)");
         click[0] = sc.nextLine();
-        System.out.println("Válassz oszlopot!");
+        System.out.println("Válassz oszlopot!(add meg az X értékét)");
         click[1] = sc.nextLine();
         System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!! - try catch
         click[2] = sc.nextLine();
@@ -309,10 +327,29 @@ public class Main {
         return click;
     }
 
+    public static char[][]  gameOver(int yChoice, int xChoice, int[][] hiddenResult, char[][] gameOverBoard) {
+        if (hiddenResult[yChoice][xChoice] == 9){
+            for (int i = 1; i < hiddenResult.length -1; i++) {
+                for (int j = 1; j < hiddenResult[i].length -1; j++) {
+                    if (hiddenResult[i][j] == 9) {
+                        gameOverBoard[i][j] = '*';
+                    }
+                }
+            }
+        }
+        return gameOverBoard;
+    }
 
-//    public static
 
-//    public static boolean isGameOver(int yChoice, int xChoice, String flag) {
-//
-//    }
+    public static char[][] showNumber(int yChoice, int xChoice, int[][] hiddenResult, char[][] board){
+        if (hiddenResult[yChoice][xChoice] != 9 && hiddenResult[yChoice][xChoice] != 0){
+            board [yChoice][xChoice] = Character.forDigit(hiddenResult[yChoice][xChoice], 10);
+        }
+        return board;
+    }
+
+
+
+
+
 }
