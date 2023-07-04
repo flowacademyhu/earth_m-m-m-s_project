@@ -29,45 +29,82 @@ Nehezitesek:
 - Minel szebb megjelenes
  */
 
-/* Arrays.fill() method??
-Alternatíva a kezdeti feltöltésre?
+/* Szintek, korlátozások, értékvizsgálat, ne lehessen oda rakni ahol már van számérték!
 
  */
 public class Main {
     public static void main(String[] args) {
-        int xSide = 10;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 10;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
+        // mines
+        int mines = 8;                                      //szinteket belerakni
+        int xSide = 8;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 8;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
         char[][] table = createEmptyTable(xSide, ySide);        //the gameboard
         drawTable(table);
         System.out.println();
         int[] firstChoices = firstClick();                      // [Y és X]
-        //nehezitest belerakni!!!!!!!!!!!!!!!!!
+
         System.out.println();
-        int[][] hiddenResult = hiddenTable(xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
+        int[][] hiddenResult = hiddenTable(mines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
         drawTable(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenTablet-t is
-        table = emptyField(firstChoices[0], firstChoices[1], xSide, ySide, hiddenResult, table);
+        table = emptyField(firstChoices[0], firstChoices[1], hiddenResult, table);
         System.out.println();
-        drawTable(table);
+        drawTable(table);           //Ha elsőre nyerünk, akkor ne fusson le a mögötte lévő ciklus
+        int i = 0;
+        String[] choices = new String[0];
+        boolean isWon = true;
+        boolean addFlag = true;     //true hozzáadásnál...etc
+        int flags = 0;
+
         do {
-            click();
-            String[] choices = new String [0];
+            String[] choicesClick = click();
             choices = Arrays.copyOf(choices, choices.length + 3);
-            int i = 1;
-            if (choices[i].equals("F")){
-                // rightCLick();
+            System.out.println(Arrays.toString(choicesClick));
+            System.out.println(Arrays.toString(choices));
+            choices[i] = choicesClick[0];
+            choices[i + 1] = choicesClick[1];
+            choices[i + 2] = choicesClick[2];
+            System.out.println(choices[i]);
+            System.out.println(choices[i + 1]);
+
+            int choiceY = Integer.parseInt(choices[i]);
+            int choiceX = Integer.parseInt(choices[i + 1]);
+            int choiceValue = hiddenResult[choiceY][choiceX];
+
+            if (choices[i + 2].equals("F")) {
+                createFlag(choiceY, choiceX, table);        //beírja vagy kitörli az F-et!
+                drawTable(table);
+                System.out.println();
+
+            } else if (choiceValue == 9) {        //gamover
+                gameOver(choiceY, choiceX, hiddenResult, table);
+                drawTable(hiddenResult);
+                System.out.println();
+                isWon = false;
+                break;
+            } else if (choiceValue == 0) {         //null
+                emptyField(choiceY, choiceX, hiddenResult, table);
+                //choiceX és choiceY sorrendje felcserélve a függvénybemenetben
+                drawTable(hiddenResult);
+                System.out.println();
+                drawTable(table);
+            } else if (choiceValue > 0 && choiceValue < 9) {         //number
+                showNumber(choiceY, choiceX, hiddenResult, table);
+                drawTable(hiddenResult);
+                System.out.println();
+                drawTable(table);
 
             }
-            if (choices[0] == ){
 
-            }
             i += 3;
         }
-            while ()
-
-
-
-
-
+        while (!isFinished(table, mines));
+        if (isWon == true) {
+            drawTable(finalFlag(table));
+            System.out.println("Nyertél, gratulálok!");
+        } else {
+            drawTable(table);
+            System.out.println("Vesztettél, majd legközelebb, ügyesen játszottál!");
+        }
     }
 
 
@@ -80,11 +117,10 @@ public class Main {
      * @param chosenCoordinateY
      * @return
      */
-    public static int[][] hiddenTable(int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
+    public static int[][] hiddenTable(int mines, int xSide, int ySide, int chosenCoordinateX, int chosenCoordinateY) {
         int[][] hiddenTable = createNullTable(xSide, ySide);
-        int mineNumber = 10;                                       //predefined
         int mineCreated = 0;
-        while (mineCreated < mineNumber) {
+        while (mineCreated < mines) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
             if (((((Math.abs(randX - chosenCoordinateX)) > 1)
@@ -128,6 +164,7 @@ public class Main {
                 System.out.print("  ");
             }
         }
+        System.out.println();
     }
 
     /**
@@ -148,13 +185,11 @@ public class Main {
     /**
      * @param chosenCoordinateX - a kiválasztott koordináta x értéke
      * @param chosenCoordinateY - a kiválasztott koordináta y értéke
-     * @param sideX             - a játéktér szélessége (látható tartmomány)
-     * @param sideY             - a játéktér magassága (látható tartmomány)
      * @param hiddenResult      - a rejtett tábla
      * @param table             - gameboard amit a játékos lát
      * @return table - a bemenetét adja vissza további mezőket felfedve
      */
-    public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int sideX, int sideY, int[][] hiddenResult, char[][] table) {
+    public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int[][] hiddenResult, char[][] table) {
         table[chosenCoordinateX][chosenCoordinateY] = '0';                      //******** X és Y felcserélve!
 
         List<Integer> listEarlierPointsX = new ArrayList<>();              //Lista létrehozása X-re
@@ -299,11 +334,11 @@ public class Main {
         return firstClick;
     }
 
-//    public static int rightClick(){
+    //    public static int rightClick(){
 //        String flag = "F";
 //
 //    }
-    public static void leftClick(){
+    public static void leftClick() {
 
     }
 
@@ -319,18 +354,13 @@ public class Main {
         click[1] = sc.nextLine();
         System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!! - try catch
         click[2] = sc.nextLine();
-//        if (flag == "F") {
-//            rightClick();
-//        } else {
-//            leftClick();
-//        }
         return click;
     }
 
-    public static char[][]  gameOver(int yChoice, int xChoice, int[][] hiddenResult, char[][] gameOverBoard) {
-        if (hiddenResult[yChoice][xChoice] == 9){
-            for (int i = 1; i < hiddenResult.length -1; i++) {
-                for (int j = 1; j < hiddenResult[i].length -1; j++) {
+    public static char[][] gameOver(int yChoice, int xChoice, int[][] hiddenResult, char[][] gameOverBoard) {
+        if (hiddenResult[yChoice][xChoice] == 9) {
+            for (int i = 1; i < hiddenResult.length - 1; i++) {
+                for (int j = 1; j < hiddenResult[i].length - 1; j++) {
                     if (hiddenResult[i][j] == 9) {
                         gameOverBoard[i][j] = '*';
                     }
@@ -341,15 +371,53 @@ public class Main {
     }
 
 
-    public static char[][] showNumber(int yChoice, int xChoice, int[][] hiddenResult, char[][] board){
-        if (hiddenResult[yChoice][xChoice] != 9 && hiddenResult[yChoice][xChoice] != 0){
-            board [yChoice][xChoice] = Character.forDigit(hiddenResult[yChoice][xChoice], 10);
+    public static char[][] showNumber(int yChoice, int xChoice, int[][] hiddenResult, char[][] board) {
+        if (hiddenResult[yChoice][xChoice] != 9 && hiddenResult[yChoice][xChoice] != 0) {
+            board[yChoice][xChoice] = Character.forDigit(hiddenResult[yChoice][xChoice], 10);
         }
         return board;
     }
 
 
+    public static boolean isFinished(char[][] board, int mines) {
+        int count = 0;
+        for (int i = 1; i < board.length - 1; i++) {
+            for (int j = 1; j < board[i].length - 1; j++) {
+                if (board[i][j] == '_' || board[i][j] == 'F') {
+                    count++;
+                }
+            }
+        }
+        if (count == mines) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public static char[][] finalFlag(char[][] board) {
+        for (int i = 1; i < board.length - 1; i++) {
+            for (int j = 1; j < board[i].length - 1; j++) {
+                if (board[i][j] == '_') {
+                    board[i][j] = 'F';
+                }
+            }
+        }
+        return board;
+    }
 
 
+    public static char[][] createFlag(int xCoord, int yCoord, char[][] board) {
+        if (board[xCoord][yCoord] == 'F') {
+            board[xCoord][yCoord] = '_';
+        } else if (board[xCoord][yCoord] == '_') {
+            board[xCoord][yCoord] = 'F';
+        }
+        return board;
+    }
+
+//    public static int flagCounter(int flagcounter, boolean addFlag) {
+//        return flagcounter = addFlag ? flagcounter++ : flagcounter--;
+//    }
 
 }
