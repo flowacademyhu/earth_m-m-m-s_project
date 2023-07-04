@@ -52,8 +52,7 @@ public class Main {
             int i = 0;
             String[] choices = new String[0];
             boolean isWon = true;
-            boolean addFlag = true;     //true hozzáadásnál, false kivonásnál
-            int flags = 0;
+            int flagCounter = 0;
 
             do {
                 String[] choicesClick = click();
@@ -72,24 +71,24 @@ public class Main {
                 int choiceValue = hiddenResult[choiceY][choiceX];
 
                 if (choices[i + 2].equals("F")) {
-                    if (flags < numberOfMines) {
+                    if (flagCounter < numberOfMines) {
                         if (playerBoard[choiceY][choiceX] == '_') {
                             createFlag(choiceY, choiceX, playerBoard);      //beírja az F-et!
-                            flags++;
+                            flagCounter++;
                         } else if (playerBoard[choiceY][choiceX] == 'F') {
                             removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
-                            flags--;
+                            flagCounter--;
                         }
                     } else {
                         if (playerBoard[choiceY][choiceX] == '_') {
                             System.out.println("Elfogytak a zászlóid!");
                         } else if (playerBoard[choiceY][choiceX] == 'F') {
                             removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
-                            flags--;
+                            flagCounter--;
                         }
                     }
                     drawTable(playerBoard);
-                    System.out.println(flags);
+                    System.out.println(flagCounter);
                     System.out.println();
 
                 } else if (choiceValue == 9) {        //ha gameover
@@ -410,10 +409,7 @@ public class Main {
                 }
             }
         }
-        if (count == numberOfMines) {
-            return true;
-        }
-        return false;
+        return count == numberOfMines;
 
     }
 
