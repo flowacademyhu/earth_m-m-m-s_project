@@ -34,9 +34,9 @@ Nehezitesek:
  */
 public class Main {
     public static void main(String[] args) {
-        int numberOfMines = 15;                                      //szinteket belerakni
-        int xSide = 15;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 15;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
+        int numberOfMines = 5;                                      //szinteket belerakni
+        int xSide = 6;                                       //x dimension of the table (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 6;                                       //y dimension of the table (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
         drawTable(playerBoard);
         System.out.println();
@@ -47,8 +47,8 @@ public class Main {
         drawTable(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenTablet-t is
         emptyField(firstChoices[0], firstChoices[1], hiddenResult, playerBoard);
         System.out.println();
-        drawTable(playerBoard);           //Ha elsőre nyerünk, akkor ne fusson le a mögötte lévő ciklus - megoldva
-        if (!isFinished(playerBoard, numberOfMines)) {
+        drawTable(playerBoard);
+        if (!isFinished(playerBoard, numberOfMines)) {      //Ha elsőre nyerünk, akkor nem fut le a mögötte lévő do-while ciklus
             int i = 0;
             String[] choices = new String[0];
             boolean isWon = true;
@@ -72,33 +72,49 @@ public class Main {
                 int choiceValue = hiddenResult[choiceY][choiceX];
 
                 if (choices[i + 2].equals("F")) {
-                    createFlag(choiceY, choiceX, playerBoard);        //beírja vagy kitörli az F-et!
+                    if (flags < numberOfMines) {
+                        if (playerBoard[choiceY][choiceX] == '_') {
+                            createFlag(choiceY, choiceX, playerBoard);      //beírja az F-et!
+                            flags++;
+                        } else if (playerBoard[choiceY][choiceX] == 'F') {
+                            removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
+                            flags--;
+                        }
+                    } else {
+                        if (playerBoard[choiceY][choiceX] == '_') {
+                            System.out.println("Elfogytak a zászlóid!");
+                        } else if (playerBoard[choiceY][choiceX] == 'F') {
+                            removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
+                            flags--;
+                        }
+                    }
                     drawTable(playerBoard);
+                    System.out.println(flags);
                     System.out.println();
 
-                } else if (choiceValue == 9) {        //gamover
+                } else if (choiceValue == 9) {        //ha gameover
                     gameOver(choiceY, choiceX, hiddenResult, playerBoard);
                     drawTable(hiddenResult);
                     System.out.println();
                     isWon = false;
                     break;
-                } else if (choiceValue == 0) {         //null
+                } else if (choiceValue == 0) {         //ha nullát talál
                     emptyField(choiceY, choiceX, hiddenResult, playerBoard);
                     //choiceX és choiceY sorrendje felcserélve a függvénybemenetben
                     drawTable(hiddenResult);
                     System.out.println();
                     drawTable(playerBoard);
-                } else if (choiceValue > 0 && choiceValue < 9) {         //number
+                } else if (choiceValue > 0 && choiceValue < 9) {         //ha 0-tól eltérő számot talál
                     showNumber(choiceY, choiceX, hiddenResult, playerBoard);
                     drawTable(hiddenResult);
                     System.out.println();
                     drawTable(playerBoard);
-
                 }
 
                 i += 3;
             }
             while (!isFinished(playerBoard, numberOfMines));
+
             if (isWon) {
                 drawTable(flagsAfterWin(playerBoard));
                 System.out.println("Nyertél, gratulálok!");
@@ -414,16 +430,16 @@ public class Main {
 
 
     public static char[][] createFlag(int xCoord, int yCoord, char[][] board) {
-        if (board[xCoord][yCoord] == 'F') {
-            board[xCoord][yCoord] = '_';
-        } else if (board[xCoord][yCoord] == '_') {
+        if (board[xCoord][yCoord] == '_') {
             board[xCoord][yCoord] = 'F';
         }
         return board;
     }
 
-//    public static int flagCounter(int flagcounter, boolean addFlag) {
-//        return flagcounter = addFlag ? flagcounter++ : flagcounter--;
-//    }
-
+    public static char[][] removeFlag(int xCoord, int yCoord, char[][] board) {
+        if (board[xCoord][yCoord] == 'F') {
+            board[xCoord][yCoord] = '_';
+        }
+        return board;
+    }
 }
