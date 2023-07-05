@@ -34,8 +34,8 @@ Nehezitesek:
 
  */
 public class Main {
-    public static void main(String[] args) {
-        int numberOfMines = 5;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
+    public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
+        int numberOfMines = 6;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
         int xSide = 8;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
         int ySide = 8;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
@@ -57,7 +57,7 @@ public class Main {
             int flagCounter = 0;
 
             do {
-                String[] choicesClick = click();
+                String[] choicesClick = click(ySide, xSide, playerBoard);
                 choices = Arrays.copyOf(choices, choices.length + 3);
                 System.out.println(Arrays.toString(choicesClick));
                 System.out.println(Arrays.toString(choices));
@@ -375,7 +375,7 @@ public class Main {
      *
      * @return
      */
-    public static int[] firstClick() {
+    public static int[] firstClick() {              //!!!!!!!!!!!!!Ez még nincs átalakítva!
         int[] firstClick = new int[2];
         Scanner sc = new Scanner(System.in);
         System.out.println("Válassz sort!(add meg az Y értékét)");
@@ -388,13 +388,68 @@ public class Main {
     /**
      * Lépés bekérés, ismétlődő
      */
-    public static String[] click() {            //ha már vmi be van írva, azt ne lehessen felülírni, kivéve removeFlag!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public static String[] click(int ySide, int xSide, char[][] playerBoard) {            //ha már vmi be van írva, azt ne lehessen felülírni, kivéve removeFlag!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         String[] click = new String[3];
         Scanner sc = new Scanner(System.in);
-        System.out.println("Válassz sort!(add meg az Y értékét)");
-        click[0] = sc.nextLine();
-        System.out.println("Válassz oszlopot!(add meg az X értékét)");
-        click[1] = sc.nextLine();
+        boolean isWrongInputX = true;
+        boolean isWrongInputY = true;
+        boolean isAlreadyVisible = true;
+
+        do {
+            while (isWrongInputY) {             //Y koordináta vizsgálata
+                try {
+                    System.out.println("Válassz sort!(add meg az Y értékét)");
+                    click[0] = sc.nextLine();
+                    int choiceY = Integer.parseInt(click[0]);       //csak akkor működik, ha számot ír be
+                } catch (NumberFormatException e) {
+                    System.out.println("Nem számot adtál meg koordinátának!");
+                    continue;
+                }
+
+                int choiceY = Integer.parseInt(click[0]);
+
+                if (choiceY < 1 || choiceY > xSide - 2) {
+                    System.out.println("A táblán kívül van a megadott sor!");
+                } else {
+                    isWrongInputY = false;
+                }
+            }
+
+            while (isWrongInputX) {             //X koordináta vizsgálata
+                try {
+                    System.out.println("Válassz oszlopot!(add meg az X értékét)");
+                    click[1] = sc.nextLine();
+                    int choiceX = Integer.parseInt(click[1]);       //csak akkor működik, ha számot ír be
+                } catch (NumberFormatException f) {
+                    System.out.println("Nem számot adtál meg koordinátának!");
+                    System.out.println();
+                    continue;
+                }
+                int choiceX = Integer.parseInt(click[1]);
+
+                if (choiceX < 1 || choiceX > ySide - 2) {
+                    System.out.println("A táblán kívül van a megadott oszlop!");
+                    System.out.println();
+                } else {
+                    isWrongInputX = false;
+                }
+            }
+
+           /* XY pont fel van-e fejtve?  - A 3 inputot lehetne 1 inputba sűríteni mindenféle String művelettel.
+           Elkezdtem kialakítani, de még nem "hülyebiztos" de egyelőre ez jobbnak tűnik!
+            */
+            int choiceY = Integer.parseInt(click[0]);
+            int choiceX = Integer.parseInt(click[1]);
+            if (playerBoard[choiceY][choiceX] == 'F' || playerBoard[choiceY][choiceX] == '_') {
+                isAlreadyVisible = false;
+            } else {
+                isWrongInputX = true;
+                isWrongInputY = true;
+                System.out.println("Ez a mező már látható, válassz egy új még nem láthatót!");
+                System.out.println();
+            }
+        } while (isAlreadyVisible);
+
         System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - try catch
         click[2] = sc.nextLine();
         return click;
