@@ -7,15 +7,16 @@ import java.util.concurrent.ThreadLocalRandom;
 /*
 Szabalyok
 - Tetszoleges teglalap alapu palya - done
-- Minden mezo vagy akna vagy nem akna
-- Mezoket meg lehet jelolni vagy ra lehet lepni
-- Jelolest azt jelenti, hogy aknat velunk azon a mezon
+- Minden mezo vagy akna vagy nem akna - done
+- Mezoket meg lehet jelolni vagy ra lehet lepni - done
+- Jelolest azt jelenti, hogy aknat velunk azon a mezon - done
 Ralepes:
-- ha akna volt a mezon, akkor vesztettunk
-- ha van szomszedos akna, akkor a szomszedos aknak szama kerul a mezore
--ha nincs szomszedos akna, akkor az egybefuggo aknamentes resz kerul felfedesre
-utolso mezo eseten, ha az nem akna, akkor nyert
-- Jatek vegen a palyat fel kell fedni
+- ha akna volt a mezon, akkor vesztettunk - done
+- ha van szomszedos akna, akkor a szomszedos aknak szama kerul a mezore - done
+-ha nincs szomszedos akna, akkor az egybefuggo aknamentes resz kerul felfedesre - done
+utolso mezo eseten, ha az nem akna, akkor nyert - done
+- Jatek vegen a palyat fel kell fedni - done
+
 Pontszamitas:
 - nehezsegi pont a palya merete es aknak szama alapjan
 - nehezseg alapjan minden lepesert pontlevonas
@@ -34,17 +35,16 @@ Nehezitesek:
  */
 public class Main {
     public static void main(String[] args) {
-        int numberOfMines = 10;                                      //szinteket belerakni
-        int xSide = 10;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 10;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
+        int numberOfMines = 5;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
+        int xSide = 8;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 8;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
         drawBoard(playerBoard);
         System.out.println();
         int[] firstChoices = firstClick();                      // [Y és X]
-
         System.out.println();
         int[][] hiddenResult = hiddenBoard(numberOfMines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
-        drawBoard(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenBoard-t is
+        drawBoard(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
         emptyField(firstChoices[0], firstChoices[1], hiddenResult, playerBoard);
 
         System.out.println();
@@ -68,7 +68,7 @@ public class Main {
                 System.out.println(choices[i + 1]);
 
                 int choiceY = Integer.parseInt(choices[i]);
-                int choiceX = Integer.parseInt(choices[i + 1]); //+ 1 a koordinátákhoz, mert a számozás miatt el van tolva
+                int choiceX = Integer.parseInt(choices[i + 1]);
 
                 int choiceValue = hiddenResult[choiceY][choiceX];
 
@@ -80,6 +80,8 @@ public class Main {
                         } else if (playerBoard[choiceY][choiceX] == 'F') {
                             removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
                             flagCounter--;
+                        } else {
+                            System.out.println("Ez a mező már fel van fedve, ide nem léphetsz.");
                         }
                     } else {
                         if (playerBoard[choiceY][choiceX] == '_') {
@@ -87,6 +89,8 @@ public class Main {
                         } else if (playerBoard[choiceY][choiceX] == 'F') {
                             removeFlag(choiceY, choiceX, playerBoard);      //kitörli az F-et!
                             flagCounter--;
+                        } else {
+                            System.out.println("Ez a mező már fel van fedve, ide nem léphetsz.");
                         }
                     }
                     drawBoard(playerBoard);
@@ -129,9 +133,7 @@ public class Main {
             }
         } else {
             System.out.println("Nyertél, gratulálok!");
-
         }
-
     }
 
 
@@ -150,11 +152,16 @@ public class Main {
         while (mineCreated < numberOfMines) {
             int randX = ThreadLocalRandom.current().nextInt(1, xSide - 1);      //creating random coordinates
             int randY = ThreadLocalRandom.current().nextInt(1, ySide - 1);      //creating random coordinates
-            if (((((Math.abs(randX - chosenCoordinateX)) > 1)
-                    || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenBoard[randX][randY] != 9)) {    //******** X és Y felcserélve!
-                //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
-                hiddenBoard[randX][randY] = 9;              //******** X és Y felcserélve!
-                mineCreated++;
+            try {
+
+                if (((((Math.abs(randX - chosenCoordinateX)) > 1)
+                        || ((Math.abs(randY - chosenCoordinateY)) > 1)) && hiddenBoard[randX][randY] != 9)) {    //******** X és Y felcserélve!
+                    //az első lépés szomszédos mezőire, és arra a mezőre, ahol már van akna nem rak aknát
+                    hiddenBoard[randX][randY] = 9;              //******** X és Y felcserélve!
+                    mineCreated++;
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Hiba");
             }
         }
         //Eddig legenerálódnak a csillagok
@@ -177,14 +184,15 @@ public class Main {
         return hiddenBoard;
     }
 
+
     /**
      * Megrajzolja a látható táblát
      *
      * @param board
      */
     public static void drawBoard(char[][] board) {
-        int rowCounter = 0;
         int columnCounter = 0;
+        int rowCounter = 0;
 
         for (int i = 0; i < board[0].length - 2; i++) {            //Számok kiírása az oszlopok fölé
             columnCounter++;
@@ -200,9 +208,9 @@ public class Main {
                     rowCounter++;
                     System.out.print("     " + rowCounter);
                     System.out.println();
-                    break;
+                } else {
+                    System.out.print("   ");               //a mezők elválasztása egymástól a sorokban
                 }
-                System.out.print("   ");                        //a mezők elválasztása egymástól a sorokban
             }
         }
         System.out.println();
@@ -213,7 +221,7 @@ public class Main {
      *
      * @param board
      */
-    public static void drawBoard(int[][] board) {                   //Számok a sorok és az oszlopok mellé!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    public static void drawBoard(int[][] board) {
         for (int i = 1; i < board.length - 1; i++) {                //a keret (első és utolsó sor, ill. oszlop) nem kerül megjelenítésre
             System.out.println();
             for (int j = 1; j < board[i].length - 1; j++) {
@@ -231,7 +239,8 @@ public class Main {
      * @param board             - gameboard amit a játékos lát
      * @return board - a bemenetét adja vissza további mezőket felfedve
      */
-    public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int[][] hiddenResult, char[][] board) {
+    public static char[][] emptyField(int chosenCoordinateX, int chosenCoordinateY, int[][] hiddenResult,
+                                      char[][] board) {
         board[chosenCoordinateX][chosenCoordinateY] = '0';                      //******** X és Y felcserélve!
 
         List<Integer> listEarlierPointsX = new ArrayList<>();              //Lista létrehozása X-re
