@@ -20,15 +20,15 @@ Pontszamitas:
 - eltelt ido
 
 Nehezitesek:
-- Egyedi palyameret
-- Szabalyozhato akna szam
-- Elore meghatarozott nehezsegek (konnyu, kozepes, nehez) ami megadja a palya meretet es akna szamot
+- Egyedi palyameret - done
+- Szabalyozhato akna szam -done
+- Elore meghatarozott nehezsegek (konnyu, kozepes, nehez) ami megadja a palya meretet es akna szamot -done
 - Smiley a kozepen
 - Minel szebb megjelenes
  */
 
 /* Extra features
-- megfelelő bemenetek korlátozása - done
+- megfelelő bemenetek korlátozása - done***************************
 - mentés felajánlása
 - cheat: ezt beírva kirajzolja a hidden table-t
 - szabályok kiiratása a játék megkezdése előtt, pl. Ctrl+C kilépés, stb.
@@ -36,9 +36,10 @@ Nehezitesek:
  */
 public class Main {
     public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
-        int numberOfMines = 60;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
-        int xSide = 12;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 32;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
+        int[] gameLevelParams = gameLevel();
+        int numberOfMines = gameLevelParams[2];
+        int xSide = gameLevelParams[0];                                     //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
+        int ySide = gameLevelParams[1];                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
         clearScreen();
         drawBoard(playerBoard);                                       //playerBoard kiiratás az első input előtt
@@ -401,7 +402,7 @@ public class Main {
             }
 
             if (firstClick[1] < 1 || firstClick[1] > ySide - 2) {
-                System.out.println("A táblán kívül van a megadott sor!");
+                System.out.println("A táblán kívül van a megadott oszlop!");
             } else {
                 isWrongInputX = false;
             }
@@ -425,6 +426,7 @@ public class Main {
         }
         return firstClick;
     }
+
     /**
      * Lépés bekérés, ismétlődő
      */
@@ -434,13 +436,15 @@ public class Main {
         boolean isWrongInputX = true;
         boolean isWrongInputY = true;
         boolean isAlreadyVisible = true;
+        boolean isAlreadyFlag = true;
 
+//        while (isAlreadyFlag) {            //Flag függvényében visszatér
         do {
             while (isWrongInputX) {             //X koordináta vizsgálata
                 try {
                     System.out.println("Válassz oszlopot!(add meg az X értékét)");
                     click[1] = sc.nextLine();
-                    int choiceX = Integer.parseInt(click[1]);       //csak akkor működik, ha számot ír be
+                    Integer.parseInt(click[1]);       //csak akkor működik, ha számot ír be
                 } catch (NumberFormatException f) {
                     System.out.println("Nem számot adtál meg koordinátának!");
                     System.out.println();
@@ -460,7 +464,7 @@ public class Main {
                 try {
                     System.out.println("Válassz sort!(add meg az Y értékét)");
                     click[0] = sc.nextLine();
-                    int choiceY = Integer.parseInt(click[0]);       //csak akkor működik, ha számot ír be
+                    Integer.parseInt(click[0]);       //csak akkor működik, ha számot ír be
                 } catch (NumberFormatException e) {
                     System.out.println("Nem számot adtál meg koordinátának!");
                     continue;
@@ -490,8 +494,28 @@ public class Main {
             }
         } while (isAlreadyVisible);
 
-        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");       //hülyebiztos legyen!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - try catch
+
+        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");
         click[2] = sc.nextLine();
+
+
+//            int choiceY = Integer.parseInt(click[0]);
+//            int choiceX = Integer.parseInt(click[1]);
+//            char value = playerBoard[choiceY][choiceX];
+//            if (click[2] != "F" && value == 'F') {
+//                System.out.println("Olyan mezőt nem fedhetsz fel, ahol már van zászló! Válassz újat");
+//                isWrongInputX = true;
+//                isWrongInputY = true;
+//                isAlreadyVisible = true;
+//            } else if (click[2] == "F" && value == 'F') {
+//                isAlreadyFlag = false;
+//            } else {
+//                isAlreadyFlag = false;
+//            }
+//
+//        }
+
+
         return click;
     }
 
@@ -558,6 +582,64 @@ public class Main {
     public static void clearScreen() {          //Windows CMD-n és IDE terminálon nem működik! What else???????????????????????
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static int[] gameLevel() {         //hülyebiztosítás!
+        System.out.println("Válassz nehézségi szintet!");
+        System.out.println("1 - easy, 2 - medium, 3 - Die hard, 4 - egyéni");
+        Scanner dc = new Scanner(System.in);
+        int level = dc.nextInt();
+        //ySide, xSide, mines
+        int[] levelEasy = new int[]{10, 10, 10};       //easy + 2-2 a méreteknél
+        int[] levelMedium = new int[]{18, 18, 40};
+        int[] levelHard = new int[]{34, 34, 100};
+        int[] levelCustom = new int[3];
+        if (level == 1) {
+            return levelEasy;
+        } else if (level == 2) {
+            return levelMedium;
+        } else if (level == 3) {
+            return levelHard;
+        } else if (level == 4) {
+            boolean isPlayable = true;
+            while (isPlayable) {
+                try {
+                    System.out.println("Add meg a pálya magasságát!");
+                    Scanner sc = new Scanner(System.in);
+                    levelCustom[0] = Math.abs(sc.nextByte() + 2);
+                } catch (Exception e) {
+                    System.out.println("Nem jó paraméter!");
+                    continue;
+                }
+                isPlayable = false;
+            }
+            isPlayable = true;
+            while (isPlayable) {
+                try {
+                    System.out.println("Add meg a pálya szélességét!");
+                    Scanner sc = new Scanner(System.in);
+                    levelCustom[1] = Math.abs(sc.nextByte() + 2);
+                } catch (Exception e) {
+                    System.out.println("Nem jó paraméter!");
+                    continue;
+                }
+                isPlayable = false;
+            }
+            isPlayable = true;
+            while (isPlayable) {
+                try {
+                    System.out.println("Add meg az aknák számát");
+                    Scanner sc = new Scanner(System.in);
+                    levelCustom[2] = Math.abs(sc.nextByte());
+                } catch (Exception e) {
+                    System.out.println("Nem jó paraméter!");
+                    continue;
+                }
+                isPlayable = false;
+            }
+            return levelCustom;
+        }
+        return levelEasy;
     }
 
 }
