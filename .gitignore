@@ -2,9 +2,13 @@
 **/.idea/*.xml
 
 ### IntelliJ IDEA ###
+
+!**/out/artifacts/*.jar
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+#!**/out/production/**/META-INF/MANIFEST.MF
+#!**/src/main/**/out/
+#!**/src/master/**/out/
+#!**/src/test/**/out/
 
 ### Eclipse ###
 .apt_generated
