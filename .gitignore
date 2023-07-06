@@ -3,7 +3,7 @@
 
 ### IntelliJ IDEA ###
 
-!**/out/artifacts/*.jar
+!**/out/artifacts/
 out/
 #!**/out/production/**/META-INF/MANIFEST.MF
 #!**/src/main/**/out/
