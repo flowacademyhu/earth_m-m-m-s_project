@@ -102,6 +102,8 @@ public class Main {
                     System.out.println("flagCounter: " + flagCounter);
                     System.out.println();
 
+                } else if (playerBoard[choiceY][choiceX] == 'F' && !choices[i + 2].equals("F")) {
+                    System.out.println("Ezen a mezőn már zászló van, a felfedéséhez vedd vissza a zászlót!");
                 } else if (choiceValue == 9) {        //ha gameover
                     gameOver(choiceY, choiceX, hiddenResult, playerBoard);
                     clearScreen();
@@ -496,7 +498,7 @@ public class Main {
 
 
         System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");
-        click[2] = sc.nextLine();
+        click[2] = sc.nextLine().toUpperCase();
 
 
 //            int choiceY = Integer.parseInt(click[0]);
