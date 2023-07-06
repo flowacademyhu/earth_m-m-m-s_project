@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
@@ -35,13 +32,13 @@ Nehezitesek:
  */
 public class Main {
     public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
-        int numberOfMines = 6;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
-        int xSide = 8;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
-        int ySide = 8;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
+        int numberOfMines = 60;                                      //szinteket belerakni!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!444
+        int xSide = 12;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
+        int ySide = 32;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
         drawBoard(playerBoard);
         System.out.println();
-        int[] firstChoices = firstClick();                      // [Y és X]
+        int[] firstChoices = firstClick(ySide, xSide);                      // [Y és X]
         System.out.println();
         int[][] hiddenResult = hiddenBoard(numberOfMines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
         drawBoard(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
@@ -375,13 +372,45 @@ public class Main {
      *
      * @return
      */
-    public static int[] firstClick() {              //!!!!!!!!!!!!!Ez még nincs átalakítva!
+    public static int[] firstClick(int ySide, int xSide) {
         int[] firstClick = new int[2];
         Scanner sc = new Scanner(System.in);
-        System.out.println("Válassz sort!(add meg az Y értékét)");
-        firstClick[0] = sc.nextInt();
-        System.out.println("Válassz oszlopot!(add meg az X értékét)");
-        firstClick[1] = sc.nextInt();
+        boolean isWrongInputX = true;
+        boolean isWrongInputY = true;
+
+        while (isWrongInputY) {             //Y koordináta vizsgálata
+            try {
+                System.out.println("Válassz sort!(add meg az Y értékét)");
+                firstClick[0] = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Nem számot adtál meg koordinátának!");
+                sc.next();                  // ez átírja a bemenetet, enélkül végtelen loop
+                continue;
+            }
+
+            if (firstClick[0] < 1 || firstClick[0] > xSide - 2) {
+                System.out.println("A táblán kívül van a megadott sor!");
+            } else {
+                isWrongInputY = false;
+            }
+        }
+
+        while (isWrongInputX) {             //X koordináta vizsgálata
+            try {
+                System.out.println("Válassz oszlopot!(add meg az X értékét)");
+                firstClick[1] = sc.nextInt();
+            } catch (InputMismatchException f) {
+                System.out.println("Nem számot adtál meg koordinátának!");
+                sc.next();                                          // ez átírja a bemenetet, enélkül végtelen loop
+                continue;
+            }
+
+            if (firstClick[1] < 1 || firstClick[1] > ySide - 2) {
+                System.out.println("A táblán kívül van a megadott sor!");
+            } else {
+                isWrongInputX = false;
+            }
+        }
         return firstClick;
     }
 
@@ -467,7 +496,6 @@ public class Main {
         }
         return gameOverBoard;
     }
-
 
     public static char[][] showNumber(int yChoice, int xChoice, int[][] hiddenResult, char[][] board) {
         if (hiddenResult[yChoice][xChoice] != 9 && hiddenResult[yChoice][xChoice] != 0) {
