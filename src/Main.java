@@ -27,7 +27,11 @@ Nehezitesek:
 - Minel szebb megjelenes
  */
 
-/* Szintek, korlátozások, értékvizsgálat, ne lehessen oda rakni ahol már van számérték!
+/* Extra features
+- megfelelő bemenetek korlátozása - done
+- mentés felajánlása
+- cheat: ezt beírva kirajzolja a hidden table-t
+- szabályok kiiratása a játék megkezdése előtt, pl. Ctrl+C kilépés, stb.
 
  */
 public class Main {
@@ -36,16 +40,17 @@ public class Main {
         int xSide = 12;                                       //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
         int ySide = 32;                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
         char[][] playerBoard = createEmptyBoard(xSide, ySide);        //the gameboard
-        drawBoard(playerBoard);
+        clearScreen();
+        drawBoard(playerBoard);                                       //playerBoard kiiratás az első input előtt
         System.out.println();
         int[] firstChoices = firstClick(ySide, xSide);                      // [Y és X]
         System.out.println();
         int[][] hiddenResult = hiddenBoard(numberOfMines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
-        drawBoard(hiddenResult);                                 // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
+        drawBoard(hiddenResult);                                // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
         emptyField(firstChoices[0], firstChoices[1], hiddenResult, playerBoard);
-
         System.out.println();
-        drawBoard(playerBoard);
+        clearScreen();                                                  // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
+        drawBoard(playerBoard);                                         //playerBoard kiiratás inputok előtt
         System.out.println("Felhasználható zászlók száma: " + numberOfMines);
         if (!isFinished(playerBoard, numberOfMines)) {      //Ha elsőre nyerünk, akkor nem fut le a mögötte lévő do-while ciklus
             int i = 0;
@@ -90,6 +95,7 @@ public class Main {
                             System.out.println("Ez a mező már fel van fedve, ide nem léphetsz.");
                         }
                     }
+                    clearScreen();
                     drawBoard(playerBoard);
                     System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                     System.out.println("flagCounter: " + flagCounter);
@@ -97,6 +103,7 @@ public class Main {
 
                 } else if (choiceValue == 9) {        //ha gameover
                     gameOver(choiceY, choiceX, hiddenResult, playerBoard);
+                    clearScreen();
                     drawBoard(hiddenResult);
                     System.out.println();
                     isWon = false;
@@ -106,12 +113,15 @@ public class Main {
                     //choiceX és choiceY sorrendje felcserélve a függvénybemenetben
                     drawBoard(hiddenResult);
                     System.out.println();
+                    clearScreen();
                     drawBoard(playerBoard);
                     System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 } else if (choiceValue > 0 && choiceValue < 9) {         //ha 0-tól eltérő számot talál
                     showNumber(choiceY, choiceX, hiddenResult, playerBoard);
+                    clearScreen();
                     drawBoard(hiddenResult);
                     System.out.println();
+                    clearScreen();
                     drawBoard(playerBoard);
                     System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 }
@@ -120,10 +130,12 @@ public class Main {
             while (!isFinished(playerBoard, numberOfMines));
 
             if (isWon) {
+                clearScreen();
                 drawBoard(flagsAfterWin(playerBoard));
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Nyertél, gratulálok!");
             } else {
+                clearScreen();
                 drawBoard(playerBoard);
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Vesztettél, majd legközelebb! Ügyesen játszottál!");
@@ -378,23 +390,6 @@ public class Main {
         boolean isWrongInputX = true;
         boolean isWrongInputY = true;
 
-        while (isWrongInputY) {             //Y koordináta vizsgálata
-            try {
-                System.out.println("Válassz sort!(add meg az Y értékét)");
-                firstClick[0] = sc.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Nem számot adtál meg koordinátának!");
-                sc.next();                  // ez átírja a bemenetet, enélkül végtelen loop
-                continue;
-            }
-
-            if (firstClick[0] < 1 || firstClick[0] > xSide - 2) {
-                System.out.println("A táblán kívül van a megadott sor!");
-            } else {
-                isWrongInputY = false;
-            }
-        }
-
         while (isWrongInputX) {             //X koordináta vizsgálata
             try {
                 System.out.println("Válassz oszlopot!(add meg az X értékét)");
@@ -411,9 +406,25 @@ public class Main {
                 isWrongInputX = false;
             }
         }
+
+        while (isWrongInputY) {             //Y koordináta vizsgálata
+            try {
+                System.out.println("Válassz sort!(add meg az Y értékét)");
+                firstClick[0] = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Nem számot adtál meg koordinátának!");
+                sc.next();                  // ez átírja a bemenetet, enélkül végtelen loop
+                continue;
+            }
+
+            if (firstClick[0] < 1 || firstClick[0] > xSide - 2) {
+                System.out.println("A táblán kívül van a megadott sor!");
+            } else {
+                isWrongInputY = false;
+            }
+        }
         return firstClick;
     }
-
     /**
      * Lépés bekérés, ismétlődő
      */
@@ -425,25 +436,6 @@ public class Main {
         boolean isAlreadyVisible = true;
 
         do {
-            while (isWrongInputY) {             //Y koordináta vizsgálata
-                try {
-                    System.out.println("Válassz sort!(add meg az Y értékét)");
-                    click[0] = sc.nextLine();
-                    int choiceY = Integer.parseInt(click[0]);       //csak akkor működik, ha számot ír be
-                } catch (NumberFormatException e) {
-                    System.out.println("Nem számot adtál meg koordinátának!");
-                    continue;
-                }
-
-                int choiceY = Integer.parseInt(click[0]);
-
-                if (choiceY < 1 || choiceY > xSide - 2) {
-                    System.out.println("A táblán kívül van a megadott sor!");
-                } else {
-                    isWrongInputY = false;
-                }
-            }
-
             while (isWrongInputX) {             //X koordináta vizsgálata
                 try {
                     System.out.println("Válassz oszlopot!(add meg az X értékét)");
@@ -464,7 +456,26 @@ public class Main {
                 }
             }
 
-           /* XY pont fel van-e fejtve?  - A 3 inputot lehetne 1 inputba sűríteni mindenféle String művelettel.
+            while (isWrongInputY) {             //Y koordináta vizsgálata
+                try {
+                    System.out.println("Válassz sort!(add meg az Y értékét)");
+                    click[0] = sc.nextLine();
+                    int choiceY = Integer.parseInt(click[0]);       //csak akkor működik, ha számot ír be
+                } catch (NumberFormatException e) {
+                    System.out.println("Nem számot adtál meg koordinátának!");
+                    continue;
+                }
+
+                int choiceY = Integer.parseInt(click[0]);
+
+                if (choiceY < 1 || choiceY > xSide - 2) {
+                    System.out.println("A táblán kívül van a megadott sor!");
+                } else {
+                    isWrongInputY = false;
+                }
+            }
+
+            /* XY pont fel van-e fejtve?  - A 3 inputot lehetne 1 inputba sűríteni mindenféle String művelettel.
            Elkezdtem kialakítani, de még nem "hülyebiztos" de egyelőre ez jobbnak tűnik!
             */
             int choiceY = Integer.parseInt(click[0]);
@@ -543,4 +554,10 @@ public class Main {
         }
         return board;
     }
+
+    public static void clearScreen() {          //Windows CMD-n és IDE terminálon nem működik! What else???????????????????????
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
 }
