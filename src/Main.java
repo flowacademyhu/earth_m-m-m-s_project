@@ -35,9 +35,15 @@ Nehezitesek:
 - szabályok kiiratása a játék megkezdése előtt, pl. Ctrl+C kilépés, stb.
 
  */
+
+
 public class Main {
+    private static int timeElapsed = 0;
+    private static Timer timer;
+    private static TimerTask runningGame;
 
     public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
+        setTimer();
         clearScreen();
         gameRules();
         int[] gameLevelParams = gameLevel();
@@ -57,6 +63,7 @@ public class Main {
         clearScreen();                                                  // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
         drawBoard(playerBoard);                                         //playerBoard kiiratás inputok előtt
         System.out.println("Felhasználható zászlók száma: " + numberOfMines);
+
         if (!isFinished(playerBoard, numberOfMines)) {      //Ha elsőre nyerünk, akkor nem fut le a mögötte lévő do-while ciklus
             int i = 0;
             String[] choices = new String[0];
@@ -145,17 +152,24 @@ public class Main {
                 drawBoard(flagsAfterWin(playerBoard));
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Nyertél, gratulálok!");
+                stopTimer();
+                System.out.println("Eltelt idő: " + timeElapsed + " másodperc");
             } else {
                 clearScreen();
                 drawBoard(playerBoard);
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Vesztettél, majd legközelebb! Ügyesen játszottál!");
+                stopTimer();
+                System.out.println("Eltelt idő: " + timeElapsed + " másodperc");
             }
         } else {
             System.out.println("Nyertél, gratulálok!");
+            stopTimer();
+            System.out.println("Eltelt idő: " + timeElapsed + " másodperc");
         }
 
     }
+
 
     public static void gameRules() {
         System.out.println("AKNAKERESŐ - MINESWEEPER");
@@ -182,6 +196,23 @@ public class Main {
             }
         }
         return board;
+    }
+
+    public static void setTimer() {                                                                              //TIMER ITT VAN.
+        timer = new Timer();
+        runningGame = new TimerTask() {
+            @Override
+            public void run() {
+                timeElapsed++;
+            }
+        };
+        timer.schedule(runningGame, 0, 1000);
+    }
+
+    public static void stopTimer() {
+        timer.cancel();
+        runningGame.cancel();
+
     }
 
     /**
