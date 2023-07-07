@@ -1,7 +1,4 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class functions {
 
@@ -218,60 +215,85 @@ public class functions {
     }
 
     public static int[] gameLevel() {         //hülyebiztosítás!
-        System.out.println("Válassz nehézségi szintet!");
-        System.out.println("1 - easy, 2 - medium, 3 - Die hard, 4 - egyéni");
-        Scanner dc = new Scanner(System.in);
-        int level = dc.nextInt();
-        //ySide, xSide, mines
+        boolean correctInput = false;
+        int[] chosenLevel = new int[3];
         int[] levelEasy = new int[]{10, 10, 10};       //easy + 2-2 a méreteknél
         int[] levelMedium = new int[]{18, 18, 40};
         int[] levelHard = new int[]{34, 34, 100};
         int[] levelCustom = new int[3];
-        if (level == 1) {
-            return levelEasy;
-        } else if (level == 2) {
-            return levelMedium;
-        } else if (level == 3) {
-            return levelHard;
-        } else if (level == 4) {
-            boolean isPlayable = true;
-            while (isPlayable) {
-                try {
-                    System.out.println("Add meg a pálya magasságát!");
-                    Scanner sc = new Scanner(System.in);
-                    levelCustom[0] = Math.abs(sc.nextByte() + 2);
-                } catch (Exception e) {
-                    System.out.println("Nem jó paraméter!");
-                    continue;
+
+        while (!correctInput) {
+            System.out.println("Válassz nehézségi szintet!");
+            System.out.println("1 - easy, 2 - medium, 3 - Die hard, 4 - egyéni");
+            Scanner dc = new Scanner(System.in);
+            int level = dc.nextInt();
+            //ySide, xSide, mines
+            System.out.println(Arrays.toString(chosenLevel));
+
+            if (level > 4 || level < 1) {
+                System.out.println();
+                System.out.println("Hibás nehézségi szint!");
+                System.out.println();
+            } else if (level == 1) {
+                chosenLevel = levelEasy;
+                correctInput = true;
+            } else if (level == 2) {
+                chosenLevel = levelMedium;
+                correctInput = true;
+            } else if (level == 3) {
+                chosenLevel = levelHard;
+                correctInput = true;
+            } else if (level == 4) {
+                boolean isPlayable = false;
+                while (!isPlayable) {
+                    try {
+                        System.out.println("Add meg a pálya magasságát!");
+                        Scanner sc = new Scanner(System.in);
+                        levelCustom[0] = Math.abs(sc.nextByte() + 2);
+                    } catch (Exception e) {
+                        System.out.println("Nem jó paraméter!");
+                        continue;
+                    }
+                    isPlayable = true;
                 }
                 isPlayable = false;
-            }
-            isPlayable = true;
-            while (isPlayable) {
-                try {
-                    System.out.println("Add meg a pálya szélességét!");
-                    Scanner sc = new Scanner(System.in);
-                    levelCustom[1] = Math.abs(sc.nextByte() + 2);
-                } catch (Exception e) {
-                    System.out.println("Nem jó paraméter!");
-                    continue;
+                while (!isPlayable) {
+                    try {
+                        System.out.println("Add meg a pálya szélességét!");
+                        Scanner sc = new Scanner(System.in);
+                        levelCustom[1] = Math.abs(sc.nextByte() + 2);
+                    } catch (Exception e) {
+                        System.out.println("Nem jó paraméter!");
+                        continue;
+                    }
+                    isPlayable = true;
                 }
                 isPlayable = false;
-            }
-            isPlayable = true;
-            while (isPlayable) {
-                try {
-                    System.out.println("Add meg az aknák számát");
-                    Scanner sc = new Scanner(System.in);
-                    levelCustom[2] = Math.abs(sc.nextByte());
-                } catch (Exception e) {
-                    System.out.println("Nem jó paraméter!");
-                    continue;
+                while (!isPlayable) {
+                    try {
+                        System.out.println("Add meg az aknák számát");
+                        Scanner sc = new Scanner(System.in);
+                        levelCustom[2] = Math.abs(sc.nextByte());
+                    } catch (Exception e) {
+                        System.out.println("Nem jó paraméter!");
+                        continue;
+                    }
+                    System.out.println(levelCustom[0]);
+                    System.out.println(levelCustom[1]);
+                    System.out.println(levelCustom[2]);
+                    int mineLimit = (levelCustom[0] - 2) * (levelCustom[1] - 2) - 9;
+                    System.out.println(((levelCustom[0] - 2) * (levelCustom[1] - 2)) - 9);
+                    if (levelCustom[2] > (((levelCustom[0] - 2) * (levelCustom[1] - 2)) - 9)) { //8 szomszédja van egy mezőnek, ezért maximum annyi akna lehet a táblán, amennyitől még körbe tudja vizsgálni egy mező szomszédjait a program
+                        System.out.println("Túl sok akna, " + mineLimit + "-nál/nél kevesebb kell, hogy legyen!");
+
+                    } else {
+                        isPlayable = true;
+                    }
                 }
-                isPlayable = false;
+                chosenLevel = levelCustom;
+                correctInput = true;
             }
-            return levelCustom;
         }
-        return levelEasy;
+        return chosenLevel;
     }
 }

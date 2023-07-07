@@ -39,7 +39,7 @@ Nehezitesek:
 
 public class Main {
     public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
-        functions.setTimer();
+
         functions.clearScreen();
         board.gameRules();
         int[] gameLevelParams = functions.gameLevel();
@@ -52,6 +52,7 @@ public class Main {
         System.out.println();
         int[] firstChoices = functions.firstClick(ySide, xSide);                      // [Y és X]
         System.out.println();
+        functions.setTimer();
         int[][] hiddenResult = board.hiddenBoard(numberOfMines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
         board.drawBoard(hiddenResult);                                // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
         board.emptyField(firstChoices[0], firstChoices[1], hiddenResult, playerBoard);
