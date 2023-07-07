@@ -28,14 +28,18 @@ Nehezitesek:
  */
 
 /* Extra features
+- nehézségi szint szám megadásánál hiba javítás, és bombák számának korlátozása.
 - megfelelő bemenetek korlátozása - done***************************
 - mentés felajánlása
-- cheat: ezt beírva kirajzolja a hidden table-t
+- cheat: ezt beírva kirajzolja a hidden table-t - done
 - szabályok kiiratása a játék megkezdése előtt, pl. Ctrl+C kilépés, stb.
 
  */
 public class Main {
+
     public static void main(String[] args) {                        //XY oldalak meg vannak fordítva!
+        clearScreen();
+        gameRules();
         int[] gameLevelParams = gameLevel();
         int numberOfMines = gameLevelParams[2];
         int xSide = gameLevelParams[0];                                     //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
@@ -104,6 +108,10 @@ public class Main {
 
                 } else if (playerBoard[choiceY][choiceX] == 'F' && !choices[i + 2].equals("F")) {
                     System.out.println("Ezen a mezőn már zászló van, a felfedéséhez vedd vissza a zászlót!");
+                } else if (choices[i + 2].equals("CHEAT")) {
+                    cheat(playerBoard, hiddenResult);
+                    clearScreen();
+                    drawBoard(playerBoard);
                 } else if (choiceValue == 9) {        //ha gameover
                     gameOver(choiceY, choiceX, hiddenResult, playerBoard);
                     clearScreen();
@@ -146,8 +154,35 @@ public class Main {
         } else {
             System.out.println("Nyertél, gratulálok!");
         }
+
     }
 
+    public static void gameRules() {
+        System.out.println("AKNAKERESŐ - MINESWEEPER");
+        System.out.println("1.01. version - 2023");
+        System.out.println(scoreColor.RED_BOLD + "created by: m&&m&&m's" + scoreColor.RESET);
+        System.out.println();
+        System.out.println("A játékszabályok:");
+        System.out.println("Találd meg a táblán lévő aknákat! Egy lépésben fel is fedhetsz mezőket," +
+                "\n" +
+                "de meg is jelölheted az aknát helyét. etc..");
+        System.out.println();
+        System.out.println(scoreColor.RED + "Kezdhetjük a játékot? Ha igen, nyomj egy billentyűt és egy ENTERT!" + scoreColor.RESET);
+        Scanner sc = new Scanner(System.in);
+        String start = sc.next();
+        clearScreen();
+    }
+
+    public static char[][] cheat(char[][] board, int[][] hiddenResult) {
+        for (int i = 1; i < board.length - 1; i++) {
+            for (int j = 1; j < board[i].length - 1; j++) {
+                if ((board[i][j] == '_' && hiddenResult[i][j] == 9) || (board[i][j] == 'F' && hiddenResult[i][j] == 9)) {
+                    board[i][j] = '*';
+                }
+            }
+        }
+        return board;
+    }
 
     /**
      * Rejtett tábla, amit a játékos nem lát
@@ -215,7 +250,7 @@ public class Main {
 
         for (int i = 1; i < board.length - 1; i++) {
             for (int j = 1; j < board[0].length - 1; j++) {
-                System.out.print(board[i][j]);                   //a játékterület kiíratása
+                System.out.print(scoreColor.color(board[i][j]) + board[i][j] + scoreColor.RESET);                   //a játékterület kiíratása
                 if (j == board[0].length - 2) {                  //sor végén a számok kiírása az sorok mellé
                     rowCounter++;
                     System.out.print("     " + rowCounter);
@@ -643,5 +678,6 @@ public class Main {
         }
         return levelEasy;
     }
+
 
 }
