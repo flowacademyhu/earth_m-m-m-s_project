@@ -46,6 +46,7 @@ public class Main {
         int numberOfMines = gameLevelParams[2];
         int xSide = gameLevelParams[0];                                     //x dimension of the board (megnövelt érték az első és az utolsó sorral!)
         int ySide = gameLevelParams[1];                                       //y dimension of the board (megnövelt érték az első és az utolsó oszloppal!)
+        boolean didCheat = false;
         char[][] playerBoard = board.createEmptyBoard(xSide, ySide);        //the gameboard
         functions.clearScreen();
         board.drawBoard(playerBoard);                                       //playerBoard kiiratás az első input előtt
@@ -113,9 +114,10 @@ public class Main {
                 } else if (playerBoard[choiceY][choiceX] == 'F' && !choices[i + 2].equals("F")) {
                     System.out.println("Ezen a mezőn már zászló van, a felfedéséhez vedd vissza a zászlót!");
                 } else if (choices[i + 2].equals("CHEAT")) {
-                    functions.cheat(playerBoard, hiddenResult);
                     functions.clearScreen();
-                    board.drawBoard(playerBoard);
+                    char[][] cheatBoard = functions.cheat(playerBoard, hiddenResult);
+                    board.drawBoard(cheatBoard);
+                    didCheat = true;
                 } else if (choiceValue == 9) {        //ha gameover
                     functions.gameOver(choiceY, choiceX, hiddenResult, playerBoard);
                     functions.clearScreen();
@@ -155,6 +157,9 @@ public class Main {
                 String secondsFormatted = String.format("%02d", seconds);
                 System.out.println("Eltelt idő: " + minutes + " perc " + secondsFormatted + " másodperc");
                 System.out.println("Ennyi pontot szereztél: " + functions.score(hiddenResult));
+                if (didCheat) {
+                    System.out.println("Azért csalni nem szép dolog!");
+                }
             } else {
                 functions.clearScreen();
                 board.drawBoard(playerBoard);
@@ -175,21 +180,6 @@ public class Main {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

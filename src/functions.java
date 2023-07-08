@@ -37,7 +37,7 @@ public class functions {
                 }
             }
         }
-         return (int)((sum / timeElapsed) * 3000);
+        return (int) ((sum / timeElapsed) * 3000);
     }
 
 
@@ -225,7 +225,7 @@ public class functions {
         int[] chosenLevel = new int[3];
         int[] levelEasy = new int[]{10, 10, 10};       //easy + 2-2 a méreteknél
         int[] levelMedium = new int[]{18, 18, 40};
-        int[] levelHard = new int[]{34, 34, 100};
+        int[] levelHard = new int[]{34, 18, 50};
         int[] levelCustom = new int[3];
 
         while (!correctInput) {
@@ -315,13 +315,17 @@ public class functions {
      * @param board
      * @param hiddenResult
      */
-    public static void cheat(char[][] board, int[][] hiddenResult) {
+    public static char[][] cheat(char[][] board, int[][] hiddenResult) {
+        char[][] cheatBoard = new char[board.length][board[0].length];
         for (int i = 1; i < board.length - 1; i++) {
             for (int j = 1; j < board[i].length - 1; j++) {
                 if ((board[i][j] == '_' && hiddenResult[i][j] == 9) || (board[i][j] == 'F' && hiddenResult[i][j] == 9)) {
-                    board[i][j] = '*';
+                    cheatBoard[i][j] = '*';
+                } else {
+                    cheatBoard[i][j] = board[i][j];
                 }
             }
         }
+        return cheatBoard;
     }
 }
