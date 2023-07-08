@@ -78,6 +78,7 @@ public class board {
     public static void drawBoard(char[][] board) {
         int columnCounter = 0;
         int rowCounter = 0;
+        System.out.print("  ");         //2 karakter - számozás elcsúszása miatt******************!!!
 
         for (int i = 0; i < board[0].length - 2; i++) {            //Számok kiírása az oszlopok fölé
             columnCounter++;
@@ -85,20 +86,29 @@ public class board {
         }
         System.out.println();
         System.out.println();
-
         for (int i = 1; i < board.length - 1; i++) {
+            //A vízszintes vonalak, sarkok kiírásának helye
+            System.out.println(unicodeChar.tableRows(board.length, board[i].length - 2, i));
+
             for (int j = 1; j < board[0].length - 1; j++) {
-                System.out.print(scoreColor.color(board[i][j]) + board[i][j] + scoreColor.RESET);                   //a játékterület kiíratása
+                System.out.print(unicodeChar.VV_N_TABLE + " ");         //a számok mellé kerülő függőlegesek
+                System.out.print(scoreColor.color(board[i][j]) + board[i][j] + scoreColor.RESET);
+                System.out.print(" ");                           //a számok közé kerülő szóközök
                 if (j == board[0].length - 2) {                  //sor végén a számok kiírása az sorok mellé
                     rowCounter++;
-                    System.out.print("     " + rowCounter);
+                    System.out.print(unicodeChar.VV_N_TABLE + "    " + rowCounter);     //5 karakter eltolás helyett 4+1 !******************!!!
                     System.out.println();
                 } else {
-                    System.out.print("   ");               //a mezők elválasztása egymástól a sorokban
+                    System.out.print("");               //a mezők elválasztása egymástól a sorokban
+                }
+
+                if (i == board.length-2 && j ==board[i].length-2) { // utolsó sor alatti vonalak, az utolsó elem után kiiratva
+                    i++;
+                    System.out.println(unicodeChar.tableRows(board.length, board[i].length-2, i));
+                    System.out.println();
                 }
             }
         }
-        System.out.println();
     }
 
     /**
