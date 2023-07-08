@@ -150,14 +150,22 @@ public class Main {
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Nyertél, gratulálok!");
                 functions.stopTimer();
-                System.out.println("Eltelt idő: " + functions.timeElapsed + " másodperc");
+                int minutes = functions.timeElapsed / 60;
+                int seconds = functions.timeElapsed % 60;
+                String secondsFormatted = String.format("%02d", seconds);
+                System.out.println("Eltelt idő: " + minutes + " perc " + secondsFormatted + " másodperc");
+                System.out.println("Másodpercek: " + functions.timeElapsed);
             } else {
                 functions.clearScreen();
                 board.drawBoard(playerBoard);
                 System.out.println("Felhasználható zászlók száma: " + (numberOfMines - flagCounter));
                 System.out.println("Vesztettél, majd legközelebb! Ügyesen játszottál!");
                 functions.stopTimer();
-                System.out.println("Eltelt idő: " + functions.timeElapsed + " másodperc");
+                int minutes = functions.timeElapsed / 60;
+                int seconds = functions.timeElapsed % 60;
+                String secondsFormatted = String.format("%02d", seconds);
+                System.out.println("Eltelt idő: " + minutes + " perc " + secondsFormatted + " másodperc");
+                System.out.println("Másodpercek: " + functions.timeElapsed);
             }
         } else {
             System.out.println("Nyertél, gratulálok!");
