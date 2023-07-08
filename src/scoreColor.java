@@ -78,21 +78,21 @@ public static String color(char pb){
         case '*':
             return RED_BOLD;
         case '0':
-            return WHITE;
+            return WHITE_BOLD;
         case '1':
-            return BLUE;
+            return BLUE_BOLD;
         case '2':
-            return GREEN;
+            return GREEN_BOLD;
         case '3':
-            return YELLOW;
+            return YELLOW_BOLD;
         case '4':
-            return RED;
+            return RED_BOLD;
         case '5':
-            return PURPLE_BRIGHT;
+            return CYAN_BOLD;
         case '6':
-            return PURPLE;
+            return PURPLE_BOLD;
         case '7':
-            return CYAN;
+            return PURPLE_BRIGHT;
         case '8':
             return BLUE_BRIGHT;
 

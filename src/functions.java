@@ -24,6 +24,22 @@ public class functions {
 
     }
 
+    //8*8 = 60
+//16*16 = 238
+    //32*32=656
+//(xside * yside) /time
+    public static int score(int[][] hiddenBoard) {
+        double sum = 0;
+        for (int i = 1; i < hiddenBoard.length - 2; i++) {
+            for (int j = 0; j < hiddenBoard[i].length - 2; j++) {
+                if (hiddenBoard[i][j] != 9) {
+                    sum += hiddenBoard[i][j];
+                }
+            }
+        }
+         return (int)((sum / timeElapsed) * 3000);
+    }
+
 
     /**
      * Első koordináta bekérés

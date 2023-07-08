@@ -154,7 +154,7 @@ public class Main {
                 int seconds = functions.timeElapsed % 60;
                 String secondsFormatted = String.format("%02d", seconds);
                 System.out.println("Eltelt idő: " + minutes + " perc " + secondsFormatted + " másodperc");
-                System.out.println("Másodpercek: " + functions.timeElapsed);
+                System.out.println("Ennyi pontot szereztél: " + functions.score(hiddenResult));
             } else {
                 functions.clearScreen();
                 board.drawBoard(playerBoard);
@@ -165,7 +165,8 @@ public class Main {
                 int seconds = functions.timeElapsed % 60;
                 String secondsFormatted = String.format("%02d", seconds);
                 System.out.println("Eltelt idő: " + minutes + " perc " + secondsFormatted + " másodperc");
-                System.out.println("Másodpercek: " + functions.timeElapsed);
+                System.out.println("Ezért nem jár pont!");
+
             }
         } else {
             System.out.println("Nyertél, gratulálok!");
