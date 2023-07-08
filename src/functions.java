@@ -7,16 +7,6 @@ public class functions {
     private static TimerTask runningGame;
 
 
-    public static void cheat(char[][] board, int[][] hiddenResult) {
-        for (int i = 1; i < board.length - 1; i++) {
-            for (int j = 1; j < board[i].length - 1; j++) {
-                if ((board[i][j] == '_' && hiddenResult[i][j] == 9) || (board[i][j] == 'F' && hiddenResult[i][j] == 9)) {
-                    board[i][j] = '*';
-                }
-            }
-        }
-    }
-
     public static void setTimer() {                                                                              //TIMER ITT VAN.
         timer = new Timer();
         runningGame = new TimerTask() {
@@ -148,7 +138,7 @@ public class functions {
         } while (isAlreadyVisible);
 
 
-        System.out.println("Ha meg akarod jelölni, nyomj egy F-et?");
+        System.out.println("Ha meg akarod jelölni, nyomj egy F-et!");
         click[2] = sc.nextLine().toUpperCase();
         return click;
     }
@@ -224,11 +214,13 @@ public class functions {
 
         while (!correctInput) {
             System.out.println("Válassz nehézségi szintet!");
-            System.out.println("1 - easy, 2 - medium, 3 - Die hard, 4 - egyéni");
+            System.out.println("1 - Easy (8x8, 10 akna)");
+            System.out.println("2 - Medium (16x16, 40 akna)");
+            System.out.println("3 - Die hard (32x32, 100 akna)");
+            System.out.println("4 - Egyéni, te határozhatod meg a számokat");
             Scanner dc = new Scanner(System.in);
             int level = dc.nextInt();
             //ySide, xSide, mines
-            System.out.println(Arrays.toString(chosenLevel));
 
             if (level > 4 || level < 1) {
                 System.out.println();
@@ -245,28 +237,37 @@ public class functions {
                 correctInput = true;
             } else if (level == 4) {
                 boolean isPlayable = false;
-                while (!isPlayable) {
-                    try {
-                        System.out.println("Add meg a pálya magasságát!");
-                        Scanner sc = new Scanner(System.in);
-                        levelCustom[0] = Math.abs(sc.nextByte() + 2);
-                    } catch (Exception e) {
-                        System.out.println("Nem jó paraméter!");
-                        continue;
+                boolean isBigEnough = false;
+                while (!isBigEnough) {
+                    while (!isPlayable) {
+                        try {
+                            System.out.println("Add meg a pálya magasságát!");
+                            Scanner sc = new Scanner(System.in);
+                            levelCustom[0] = Math.abs(sc.nextByte() + 2);
+                        } catch (Exception e) {
+                            System.out.println("Nem jó paraméter!");
+                            continue;
+                        }
+                        isPlayable = true;
                     }
-                    isPlayable = true;
-                }
-                isPlayable = false;
-                while (!isPlayable) {
-                    try {
-                        System.out.println("Add meg a pálya szélességét!");
-                        Scanner sc = new Scanner(System.in);
-                        levelCustom[1] = Math.abs(sc.nextByte() + 2);
-                    } catch (Exception e) {
-                        System.out.println("Nem jó paraméter!");
-                        continue;
+                    isPlayable = false;
+                    while (!isPlayable) {
+                        try {
+                            System.out.println("Add meg a pálya szélességét!");
+                            Scanner sc = new Scanner(System.in);
+                            levelCustom[1] = Math.abs(sc.nextByte() + 2);
+                        } catch (Exception e) {
+                            System.out.println("Nem jó paraméter!");
+                            continue;
+                        }
+                        isPlayable = true;
                     }
-                    isPlayable = true;
+                    if ((levelCustom[0] - 2) * (levelCustom[1] - 2) < 20) {
+                        System.out.println("Túl kicsi a pálya, min. 20 mezőből kell állnia!");
+                        isPlayable = false;
+                    } else {
+                        isBigEnough = true;
+                    }
                 }
                 isPlayable = false;
                 while (!isPlayable) {
@@ -278,14 +279,9 @@ public class functions {
                         System.out.println("Nem jó paraméter!");
                         continue;
                     }
-                    System.out.println(levelCustom[0]);
-                    System.out.println(levelCustom[1]);
-                    System.out.println(levelCustom[2]);
                     int mineLimit = (levelCustom[0] - 2) * (levelCustom[1] - 2) - 9;
-                    System.out.println(((levelCustom[0] - 2) * (levelCustom[1] - 2)) - 9);
-                    if (levelCustom[2] > (((levelCustom[0] - 2) * (levelCustom[1] - 2)) - 9)) { //8 szomszédja van egy mezőnek, ezért maximum annyi akna lehet a táblán, amennyitől még körbe tudja vizsgálni egy mező szomszédjait a program
-                        System.out.println("Túl sok akna, " + mineLimit + "-nál/nél kevesebb kell, hogy legyen!");
-
+                    if (levelCustom[2] > mineLimit) { //8 szomszédja van egy mezőnek, ezért maximum annyi akna lehet a táblán, amennyitől még körbe tudja vizsgálni egy mező szomszédjait a program
+                        System.out.println("Túl sok akna, max. " + mineLimit + " db lehet!");
                     } else {
                         isPlayable = true;
                     }
@@ -295,5 +291,21 @@ public class functions {
             }
         }
         return chosenLevel;
+    }
+
+    /**
+     * Ha valaki csalni akar, akkor annak felfedi az összes bombát, csak annyit kell beírni a 3. inputba, hogy "cheat"
+     *
+     * @param board
+     * @param hiddenResult
+     */
+    public static void cheat(char[][] board, int[][] hiddenResult) {
+        for (int i = 1; i < board.length - 1; i++) {
+            for (int j = 1; j < board[i].length - 1; j++) {
+                if ((board[i][j] == '_' && hiddenResult[i][j] == 9) || (board[i][j] == 'F' && hiddenResult[i][j] == 9)) {
+                    board[i][j] = '*';
+                }
+            }
+        }
     }
 }
