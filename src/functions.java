@@ -30,14 +30,15 @@ public class functions {
 //(xside * yside) /time
     public static int score(int[][] hiddenBoard) {
         double sum = 0;
-        for (int i = 1; i < hiddenBoard.length - 2; i++) {
-            for (int j = 0; j < hiddenBoard[i].length - 2; j++) {
+        for (int i = 1; i < hiddenBoard.length - 1; i++) {
+            for (int j = 1; j < hiddenBoard[i].length - 1; j++) {
                 if (hiddenBoard[i][j] != 9) {
                     sum += hiddenBoard[i][j];
                 }
             }
         }
-        return (int) ((sum / timeElapsed) * 3000);
+        sum-=8;       //A 8-at hozzá kellene adni alapból, mert 1 db 8-as minimum lesz
+        return (int) ((sum *3000 )/ timeElapsed);
     }
 
 
