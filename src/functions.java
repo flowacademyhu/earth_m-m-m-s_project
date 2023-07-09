@@ -138,9 +138,7 @@ public class functions {
                 }
             }
 
-            /* XY pont fel van-e fejtve?  - A 3 inputot lehetne 1 inputba sűríteni mindenféle String művelettel.
-           Elkezdtem kialakítani, de még nem "hülyebiztos" de egyelőre ez jobbnak tűnik!
-            */
+            /* XY pont fel vizsgálata, hogy fel van-e már fejtve */
             int choiceY = Integer.parseInt(click[0]);
             int choiceX = Integer.parseInt(click[1]);
             if (playerBoard[choiceY][choiceX] == 'F' || playerBoard[choiceY][choiceX] == '_') {
@@ -215,25 +213,25 @@ public class functions {
         }
     }
 
-    public static void clearScreen() {          //Windows CMD-n és IDE terminálon nem működik! What else???????????????????????
+    public static void clearScreen() {          //Windows CMD-n és IDE terminálon nem működik
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
-    public static int[] gameLevel() {         //hülyebiztosítás!
+    public static int[] gameLevel() {         //bemenet megfelelőségének biztosítása
         boolean correctInput = false;
         int[] chosenLevel = new int[3];
         int[] levelEasy = new int[]{10, 10, 10};       //easy + 2-2 a méreteknél
         int[] levelMedium = new int[]{18, 18, 40};
-        int[] levelHard = new int[]{34, 18, 50};
+        int[] levelHard = new int[]{18, 34, 50};
         int[] levelCustom = new int[3];
 
         while (!correctInput) {
             System.out.println("Válassz nehézségi szintet!");
             System.out.println("1 - Easy (8x8, 10 akna)");
             System.out.println("2 - Medium (16x16, 40 akna)");
-            System.out.println("3 - Die hard (32x32, 100 akna)");
-            System.out.println("4 - Egyéni, te határozhatod meg a számokat");
+            System.out.println("3 - Die hard (32x16, 50 akna)");
+            System.out.println("4 - Egyéni, te határozhatod meg a pálya adatait.");
             Scanner dc = new Scanner(System.in);
             int level = dc.nextInt();
             //ySide, xSide, mines

@@ -6,14 +6,40 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class board {
     public static void gameRules() {
-        System.out.println("AKNAKERESŐ - MINESWEEPER");
+        System.out.println(scoreColor.BLUE_BOLD + "AKNAKERESŐ - MINESWEEPER" + scoreColor.RESET);
         System.out.println("1.01. version - 2023");
         System.out.println(scoreColor.RED_BOLD + "created by: m&&m&&m's" + scoreColor.RESET);
+        System.out.println(scoreColor.RED + "M" + scoreColor.RESET + "arkovic Oliver - " + scoreColor.RED + "M" + scoreColor.RESET + "áté Balázs - " + scoreColor.RED + "M" + scoreColor.RESET + "ester Péter" + scoreColor.RESET);
         System.out.println();
-        System.out.println("A játékszabályok:");
-        System.out.println("Találd meg a táblán lévő aknákat! Egy lépésben fel is fedhetsz mezőket," +
+        System.out.println(scoreColor.WHITE_UNDERLINED + "A játék célja:" + scoreColor.RESET);
+        System.out.println("Találd meg a táblán lévő aknákat!" +
                 "\n" +
-                "de meg is jelölheted az aknát helyét. etc..");
+                "Ehhez minden olyan mezőt fel kell fedned, amin nincs akna. Ha ez sikerül, akkor nyertél." +
+                "\n" +
+                "De vigyázz! Ha egyszer egy aknát rejtő mezőt fedsz fel, akkor vége a játéknak!" +
+                "\n" + "\n" +
+                scoreColor.WHITE_UNDERLINED + "A szabályok a következők: " + scoreColor.RESET +
+                "\n" +
+                "1. Minden lépésben meg kell adnod a kiválasztott mező oszlopát és sorát." +
+                "\n" +
+                "2. A pályán látható számok azt jelzik, hogy egy-egy mezőnek hány szomszédján (függőlegesen, vízszintesen és átlósan)" +
+                "\n" +
+                "található akna. A '0' azt jelzi, hogy a mező szomszédjaiban nem található akna." +
+                "\n" +
+                "2. Miután megadtad mező helyét, el kell döntened, hogy fel akarod-e fedni, vagy meg akarod-e jelölni azt egy zászlóval." +
+                "\n" +
+                "Amennyiben úgy gondolod, hogy a mező alatt akna található, akkor nyomj egy F-et." +
+                "\n" +
+                "3. A játékban annyi zászló áll a rendelkezésedre, amennyi akna található. Ha vissza akarod venni a zászlót," +
+                "\n" +
+                "akkor jelöld meg a mezőt, majd ismételten adj rá jelölést, ezzel a zászló eltűnik így fel fogod tudni fedni a mezőt egy másik lépésben." +
+                "\n" +
+                "4. A játék végén pontozzuk a teljesítményed a pálya nehézsége és a kitöltés gyorsasága szerint." +
+                "\n" +
+                "Légy óvatos!"
+        );
+
+
         System.out.println();
         System.out.println(scoreColor.RED + "Kezdhetjük a játékot? Ha igen, nyomj egy billentyűt és egy ENTERT!" + scoreColor.RESET);
         Scanner sc = new Scanner(System.in);
@@ -102,9 +128,9 @@ public class board {
                     System.out.print("");               //a mezők elválasztása egymástól a sorokban
                 }
 
-                if (i == board.length-2 && j ==board[i].length-2) { // utolsó sor alatti vonalak, az utolsó elem után kiiratva
+                if (i == board.length - 2 && j == board[i].length - 2) { // utolsó sor alatti vonalak, az utolsó elem után kiiratva
                     i++;
-                    System.out.println(unicodeChar.tableRows(board.length, board[i].length-2, i));
+                    System.out.println(unicodeChar.tableRows(board.length, board[i].length - 2, i));
                     System.out.println();
                 }
             }

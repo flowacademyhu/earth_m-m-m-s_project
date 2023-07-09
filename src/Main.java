@@ -55,7 +55,7 @@ public class Main {
         System.out.println();
         functions.setTimer();
         int[][] hiddenResult = board.hiddenBoard(numberOfMines, xSide, ySide, firstChoices[0], firstChoices[1]); //******** X és Y felcserélve!(0 és 1)
-        board.drawBoard(hiddenResult);                                // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
+//        board.drawBoard(hiddenResult);                                // amíg készül a kód, kiíratjuk a hiddenBoard-ot is
         board.emptyField(firstChoices[0], firstChoices[1], hiddenResult, playerBoard);
         System.out.println();
         functions.clearScreen();                                                  // amíg készül a kód, kiíratjuk a hiddenBoard-ot is

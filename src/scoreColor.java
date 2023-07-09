@@ -1,5 +1,4 @@
 public class scoreColor {
-    //colors - akár külön osztályban tárolva!
     public static final String RESET = "\033[0m";  // Text Reset
 
     // Regular Colors
@@ -72,36 +71,36 @@ public class scoreColor {
     public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
     public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
 
-public static String color(char pb){
+    public static String color(char pb) {
 
-    switch (pb) {
-        case '*':
-            return RED_BOLD;
-        case '0':
-            return WHITE_BOLD;
-        case '1':
-            return BLUE_BOLD;
-        case '2':
-            return GREEN_BOLD;
-        case '3':
-            return YELLOW_BOLD;
-        case '4':
-            return RED_BOLD;
-        case '5':
-            return CYAN_BOLD;
-        case '6':
-            return PURPLE_BOLD;
-        case '7':
-            return PURPLE_BRIGHT;
-        case '8':
-            return BLUE_BRIGHT;
+        switch (pb) {
+            case '*':
+                return RED_BOLD;
+            case '0':
+                return WHITE_BOLD;
+            case '1':
+                return BLUE_BOLD;
+            case '2':
+                return GREEN_BOLD;
+            case '3':
+                return YELLOW_BOLD;
+            case '4':
+                return RED_BOLD;
+            case '5':
+                return CYAN_BOLD;
+            case '6':
+                return PURPLE_BOLD;
+            case '7':
+                return PURPLE_BRIGHT;
+            case '8':
+                return BLUE_BRIGHT;
 
-    default: return RESET;
+            default:
+                return RESET;
+
+        }
 
     }
-
-}
-
 
 
 }
