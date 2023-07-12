@@ -9,7 +9,7 @@ public class board {
         System.out.println(scoreColor.BLUE_BOLD + "AKNAKERESŐ - MINESWEEPER" + scoreColor.RESET);
         System.out.println("1.01. version - 2023");
         System.out.println(scoreColor.RED_BOLD + "created by: m&&m&&m's" + scoreColor.RESET);
-        System.out.println(scoreColor.RED + "M" + scoreColor.RESET + "arkovic Oliver - " + scoreColor.RED + "M" + scoreColor.RESET + "áté Balázs - " + scoreColor.RED + "M" + scoreColor.RESET + "ester Péter" + scoreColor.RESET);
+        System.out.println(scoreColor.RED + "M" + scoreColor.RESET + "arkovics Olivér - " + scoreColor.RED + "M" + scoreColor.RESET + "áté Balázs - " + scoreColor.RED + "M" + scoreColor.RESET + "ester Péter" + scoreColor.RESET);
         System.out.println();
         System.out.println(scoreColor.WHITE_UNDERLINED + "A játék célja:" + scoreColor.RESET);
         System.out.println("Találd meg a táblán lévő aknákat!" +
